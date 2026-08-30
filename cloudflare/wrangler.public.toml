@@ -1,0 +1,30 @@
+name = "cozy-estate"
+account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+routes = [
+  { pattern = "your-demo-domain.example", custom_domain = true }
+]
+
+# The interview build uses an isolated KV namespace. It never shares owner data.
+[vars]
+ALLOW_UNAUTHENTICATED = "true"
+PUBLIC_READ_ONLY = "false"
+DEMO_MODE = "true"
+COZY_TEXT_PROVIDER = "workers-ai"
+COZY_TEXT_FALLBACK_PROVIDER = "workers-ai-fallback"
+COZY_WORKERS_AI_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8"
+COZY_WORKERS_AI_FALLBACK_MODEL = "@cf/qwen/qwen3-30b-a3b-fp8"
+
+[assets]
+directory = "../dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "COZY_STATE"
+id = "YOUR_DEMO_KV_NAMESPACE_ID"

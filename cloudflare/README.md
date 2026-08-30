@@ -1,0 +1,88 @@
+# Cloudflare deployment
+
+Two deployments share the same source but never share owner data.
+
+## Owner app
+
+The owner Worker serves `dist-owner/`, runs before every static asset request,
+and requires a signed HttpOnly passcode session. The passcode and session key
+are Worker secrets; personal state lives in `COZY_STATE` KV. Cloudflare Access
+can replace the passcode mode later without changing the frontend.
+
+```sh
+python3 scripts/build_cloud.py --mode owner
+python3 scripts/cloud_owner_test.py
+node scripts/cloud_worker_test.mjs
+cd cloudflare
+wrangler deploy --config wrangler.toml
+```
+
+The owner app is published at your private custom domain. The custom domain
+hides the immutable Cloudflare account subdomain while preserving the existing
+Worker, KV namespace and secrets.
+
+Required secrets:
+
+- `OWNER_PASSCODE`
+- `SESSION_SECRET`
+
+Optional model secrets, never committed to GitHub:
+
+- `OPENAI_API_KEY`
+- `DEEPSEEK_API_KEY`
+- `GLM_API_KEY`
+- `QWEN_API_KEY` or `DASHSCOPE_API_KEY`
+- `ARK_API_KEY`
+
+The owner deployment tries the bound Workers AI Llama and Qwen models first,
+then uses DeepSeek V4 Flash only if both fail. R2 is optional. Until the account enables it,
+event logs fall back to bounded KV storage and media uploads remain local-only.
+
+Owner KV is the live cloud source of truth and its data keys have no TTL. The
+separate `COZY_BACKUP` KV keeps immutable per-write versions and scheduled full
+snapshots. A private `COZY_PRIVATE` R2 bucket can replace that backup layer once
+R2 is enabled. `/api/backup/status` always reports which layer is active.
+
+Cloud status, backup and pull can use Wrangler as a transport when Python HTTPS
+is intercepted by a corporate network. This keeps certificate verification on:
+
+```sh
+python3 scripts/cloud_sync.py status --transport wrangler
+python3 scripts/cloud_sync.py backup --transport wrangler
+python3 scripts/cloud_sync.py pull --transport wrangler
+```
+
+The owner Worker cron runs every Monday, Wednesday, and Friday at 08:00
+Asia/Shanghai. It collects
+recent AI news candidates, asks the configured text model to keep only the
+important items, and appends a new `notice_reports` entry. The same pipeline is
+available from `/api/weekly/run` for a manual refresh. Blackboard questions and
+grading also use the configured model and persisted memory context.
+
+Growth-field knowledge consolidation runs every Sunday at 04:15 Asia/Shanghai
+(`15 20 * * SAT` in UTC). It combines reviewed blackboard answers, notice notes
+and saved notices, and multi-turn orchard chats into three traceable topics.
+`POST /api/orchard/consolidate` runs the same idempotent pipeline manually.
+
+`workers.dev` URLs always include the Cloudflare account subdomain. Renaming a
+Worker cannot hide that account segment; use a custom domain for a clean public
+address, or change the account's Workers subdomain and accept the resulting
+`worker-name.account-subdomain.workers.dev` format.
+
+## Interview demo
+
+```sh
+python3 scripts/build_cloud.py --mode preview
+python3 scripts/cloud_privacy_test.py
+cd cloudflare
+wrangler deploy --config wrangler.public.toml
+```
+
+The demo publishes only `dist/` and uses a dedicated KV namespace that never
+shares owner data. Visitors can reset it or load guided sample data. AI routes
+stay closed until the owner toggles them with `DEMO_ADMIN_PASSCODE`; activation
+expires automatically. It has no owner memory, tree-hole data, private-room
+data, uploads, logs, or owner photos.
+
+The shareable preview URL is `https://demo.neuralnode.top`. The generated
+`workers.dev` account subdomain is not used for sharing.

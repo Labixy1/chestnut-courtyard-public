@@ -1,0 +1,895 @@
+{
+  "estate_state": {
+    "xp": 286,
+    "streak": 11,
+    "level": "持续生长",
+    "travel": {
+      "history": [
+        {
+          "id": "demo_trip_hangzhou",
+          "place": "杭州西湖",
+          "activity": "湖边散步与产品观察",
+          "date": "2026-08-17",
+          "start": "2026-08-17",
+          "end": "2026-08-18",
+          "line": "在慢下来的半天里，重新注意到产品体验也需要留白。",
+          "file": "assets/travel/travel_postcard.webp",
+          "photos": []
+        }
+      ]
+    },
+    "wall_photos": []
+  },
+  "notice_reports": {
+    "version": 2,
+    "updated_at": "2026-08-29T20:02:41.952Z",
+    "reports": [
+      {
+        "id": "demo_report_current",
+        "generated_at": "2026-08-28T08:03:00+08:00",
+        "week_start": "2026-08-22",
+        "week_end": "2026-08-28",
+        "focus_title": "Agent 产品从“能回答”走向“能可靠完成”",
+        "hot_items": [
+          {
+            "id": "demo_news_agent",
+            "title": "Agent 产品开始把权限与结果验证放到核心链路",
+            "category": "产品与实践",
+            "media": "演示数据",
+            "published_at": "2026-08-28",
+            "original_summary": "越来越多 Agent 产品不再只展示模型回答，而是把授权、工具执行、结果核验和失败恢复做成完整流程。",
+            "ai_summary": "竞争重点正在从单轮回答质量转向任务成功率。产品经理需要定义哪些动作可自动执行、哪些必须确认，以及如何证明工具真的完成了任务。",
+            "product_tip": "设计 Agent 时先画出“触发—计划—执行—验证—恢复”链路，再决定哪里使用模型；不要把所有步骤都交给模型自由发挥。",
+            "link": "https://example.com/demo-agent"
+          },
+          {
+            "id": "demo_news_eval",
+            "title": "AI 评测从离线分数扩展到真实任务与失败成本",
+            "category": "评测与数据",
+            "media": "演示数据",
+            "published_at": "2026-08-27",
+            "original_summary": "只看准确率很难判断 AI 功能是否值得上线，团队开始同时观察任务完成率、人工接管、严重错误、延迟和成本。",
+            "ai_summary": "一套可上线的评测需要覆盖效果、风险与运营成本，并按任务风险设置不同阈值。平均分更高，不代表高风险错误已经可接受。",
+            "product_tip": "先冻结真实任务集和旧方案基线，再比较任务完成率、严重错误率、P95 延迟、单次成本和人工接管率。",
+            "link": "https://example.com/demo-evaluation"
+          },
+          {
+            "id": "demo_news_memory",
+            "title": "长期记忆的难点不是存得多，而是何时该取出",
+            "category": "Agent 与自动化",
+            "media": "演示数据",
+            "published_at": "2026-08-26",
+            "original_summary": "个人助手开始采用分层记忆、证据引用和敏感内容隔离，减少旧信息误导新回答。",
+            "ai_summary": "记忆产品需要同时回答来源、时效、适用场景和撤回机制。无限累积上下文会增加成本，也容易让一次情绪被错误固化成人格判断。",
+            "product_tip": "把原始事件、候选记忆、生效记忆和档案分层保存；每次任务只检索最少量相关记忆。",
+            "link": "https://example.com/demo-memory"
+          },
+          {
+            "id": "demo_news_domestic",
+            "title": "国内团队加速把模型能力嵌入客服与办公工作流",
+            "category": "国内动态",
+            "media": "演示数据",
+            "published_at": "2026-08-26",
+            "original_summary": "国内 AI 产品的落地重点继续集中在客服、办公、内容生产和企业知识场景。",
+            "ai_summary": "国内落地更看重系统接入、权限、成本和可交付结果。模型能力只有进入真实流程，并能被业务指标衡量，才会形成持续价值。",
+            "product_tip": "调研国内方案时，不只比较模型榜单，还要比较私有数据接入、权限审计、实施周期和单任务成本。",
+            "link": "https://example.com/demo-domestic"
+          }
+        ],
+        "sections": [],
+        "insights": [
+          "Agent 的核心壁垒逐渐转向工作流、权限与可靠性。",
+          "评测必须同时覆盖价值、风险和成本。"
+        ],
+        "advice": [
+          "先选一个高频任务，把输入、执行、验证和失败恢复完整跑通，再扩展能力。"
+        ]
+      },
+      {
+        "id": "demo_report_previous",
+        "generated_at": "2026-08-25T08:01:00+08:00",
+        "week_start": "2026-08-19",
+        "week_end": "2026-08-25",
+        "focus_title": "AI 产品评测开始贴近真实工作流",
+        "hot_items": [
+          {
+            "id": "demo_news_previous",
+            "title": "从模型榜单回到用户任务：怎样判断一次 AI 升级",
+            "category": "AI 产品设计",
+            "media": "演示数据",
+            "published_at": "2026-08-24",
+            "original_summary": "团队开始用真实任务集、影子模式和分阶段灰度判断模型升级。",
+            "ai_summary": "升级判断不能只看公开基准，需要把质量、延迟、成本和失败恢复放到同一决策表中。",
+            "product_tip": "先做无用户影响的影子验证，达到分层阈值后再灰度，并保留一键回滚。",
+            "link": "https://example.com/demo-rollout"
+          }
+        ],
+        "sections": [],
+        "insights": [
+          "模型升级是产品决策，不只是技术替换。"
+        ],
+        "advice": [
+          "保留旧方案基线，让每次升级都有可比较对象。"
+        ]
+      }
+    ]
+  },
+  "daily_questions": {
+    "version": 2,
+    "updated_at": "2026-08-29T20:02:41.952Z",
+    "items": [
+      {
+        "id": "demo_question_skill",
+        "date": "2026-08-29",
+        "title": "Agent Skill 的价值与边界",
+        "type": "Agent 基础",
+        "types": [
+          "Agent 基础",
+          "概念理解"
+        ],
+        "archive_category": "Agent 与自动化",
+        "question": "产品讨论：你怎么理解 Agent Skill？它与 Prompt、工具接口有什么区别，为什么产品需要它？",
+        "standard_points": [
+          "Skill 是可复用、可版本管理的能力规范",
+          "Prompt 是单次模型输入，工具接口负责真正执行",
+          "说明输入、步骤、边界、输出和验收",
+          "用一个具体业务例子说明价值"
+        ],
+        "ideal_answer": "判断：我把 Agent Skill 理解为一份可复用、可测试、可版本管理的能力规范，也可以叫行为合同。它规定 Agent 面对一类任务时应该怎样完成，而不是一次临时提示词。\n拆解：Skill 会组织任务目标、输入条件、执行步骤、可调用工具、风险边界、输出格式和验收标准。Prompt 只负责某次模型调用要理解什么、怎样输出；工具接口负责真正查询、写入或生成内容；Worker 或运行时负责调度它们。因此 Skill 不等于 Prompt，也不等于 API，而是把二者编排成稳定能力。\n验证：判断一个 Skill 是否有效，我会用固定样例测试任务完成率、结构合规率、严重错误、延迟和成本，并检查每次版本修改有没有回归。\n边界：Skill 不能保证模型永远正确，也不能绕过权限。涉及删除、支付或隐私数据时，仍要人工确认、最小权限、审计和失败回滚。\n例子：黑板批改 Skill 会先冻结题目与评分标准，再读取用户答案，按题意理解、要点覆盖、推理支撑和迁移应用独立评分，最后检查每一项得分是否能引用原答案证据。这样同类答案可以稳定复用同一套流程，也便于持续迭代评分标准。"
+      },
+      {
+        "id": "demo_question_market",
+        "date": "2026-08-27",
+        "title": "陌生市场进入",
+        "type": "开放商业题",
+        "question": "你来到一个不吃芒果的地方，准备怎样判断要不要卖芒果？",
+        "standard_points": [
+          "先验证不吃的真实原因",
+          "区分口味、价格、供应和认知障碍",
+          "设计低成本试卖",
+          "定义继续与停止条件"
+        ]
+      }
+    ]
+  },
+  "local_state": {
+    "version": 1,
+    "updated_at": "2026-08-29T20:02:41.952Z",
+    "values": {
+      "cozy_notice_notes": [
+        {
+          "id": "demo_note",
+          "key": "demo_news_agent",
+          "title": "Agent 产品开始把权限与结果验证放到核心链路",
+          "note": "说明方案时不能只讲模型和工具，还要讲授权、验证、失败恢复与审计。",
+          "createdAt": "2026-08-28T09:20:00+08:00"
+        }
+      ],
+      "cozy_notice_chest": [
+        {
+          "id": "demo_news_agent",
+          "title": "Agent 产品开始把权限与结果验证放到核心链路",
+          "category": "产品与实践",
+          "summary": "Agent 的竞争重点正在转向任务成功率与可验证执行。",
+          "ai_summary": "设计时要把触发、计划、执行、验证和恢复串成闭环。",
+          "product_tip": "先定义风险边界，再决定自动化程度。",
+          "media": "演示数据",
+          "published": "2026-08-28",
+          "url": "https://example.com/demo-agent"
+        }
+      ],
+      "cozy_blackboard_answers": [
+        {
+          "id": "demo_answer_skill",
+          "attemptId": "demo_attempt_skill",
+          "title": "Agent Skill 的价值与边界",
+          "question": "产品讨论：你怎么理解 Agent Skill？它与 Prompt、工具接口有什么区别，为什么产品需要它？",
+          "types": [
+            "Agent 基础",
+            "概念理解"
+          ],
+          "archiveCategory": "Agent 与自动化",
+          "date": "2026-08-29",
+          "answer": "我认为 Skill 是把一个任务的做法固定下来，里面会有 Prompt 和工具。它能让 Agent 重复完成同类任务，也方便团队维护。但我还会关注权限，不能让模型随便调用工具。",
+          "standard": [
+            "Skill 是可复用、可版本管理的能力规范",
+            "Prompt 是单次模型输入，工具接口负责真正执行",
+            "说明输入、步骤、边界、输出和验收",
+            "用一个具体业务例子说明价值"
+          ],
+          "idealAnswer": "判断：我把 Agent Skill 理解为一份可复用、可测试、可版本管理的能力规范，也可以叫行为合同。它规定 Agent 面对一类任务时应该怎样完成，而不是一次临时提示词。\n拆解：Skill 会组织任务目标、输入条件、执行步骤、可调用工具、风险边界、输出格式和验收标准。Prompt 只负责某次模型调用要理解什么、怎样输出；工具接口负责真正查询、写入或生成内容；Worker 或运行时负责调度它们。因此 Skill 不等于 Prompt，也不等于 API，而是把二者编排成稳定能力。\n验证：判断一个 Skill 是否有效，我会用固定样例测试任务完成率、结构合规率、严重错误、延迟和成本，并检查每次版本修改有没有回归。\n边界：Skill 不能保证模型永远正确，也不能绕过权限。涉及删除、支付或隐私数据时，仍要人工确认、最小权限、审计和失败回滚。\n例子：黑板批改 Skill 会先冻结题目与评分标准，再读取用户答案，按题意理解、要点覆盖、推理支撑和迁移应用独立评分，最后检查每一项得分是否能引用原答案证据。这样同类答案可以稳定复用同一套流程，也便于持续迭代评分标准。",
+          "idealAnswerVersion": 1,
+          "review": {
+            "reviewVersion": 2,
+            "score": "72 / 100",
+            "scoreSummary": "方向正确，已经区分 Skill 与工具并提到权限，但 Prompt、执行接口和验收标准之间的边界还不够清楚。",
+            "gradingPolicy": "按题意理解、要点覆盖、推理支撑、迁移应用四项独立评分；参考答案只用于核对，不要求逐字命中。",
+            "scoreBreakdown": [
+              {
+                "rubricId": "comprehension",
+                "criterion": "题意理解与核心判断",
+                "max": 20,
+                "awarded": 17,
+                "evidence": "Skill 是把一个任务的做法固定下来",
+                "reason": "抓住了可复用任务规范这一核心。",
+                "teaching": "补一句 Skill 不会仅凭文档自动执行，避免把规范和运行时混在一起。"
+              },
+              {
+                "rubricId": "coverage",
+                "criterion": "任务完成与要点覆盖",
+                "max": 30,
+                "awarded": 19,
+                "evidence": "里面会有 Prompt 和工具",
+                "reason": "提到了两者，但没有分别说明 Prompt 与工具接口承担什么。",
+                "teaching": "用一句话分开三者：Skill 管完整做法，Prompt 管本轮输入，工具接口管真实执行。"
+              },
+              {
+                "rubricId": "reasoning",
+                "criterion": "推理链条与证据支撑",
+                "max": 30,
+                "awarded": 20,
+                "evidence": "让 Agent 重复完成同类任务，也方便团队维护",
+                "reason": "已经解释可复用价值，但缺少从规范化到质量稳定的因果链。",
+                "teaching": "补出版本管理、测试和验收如何减少每次临时拼 Prompt 的波动。"
+              },
+              {
+                "rubricId": "transfer",
+                "criterion": "边界意识与迁移应用",
+                "max": 20,
+                "awarded": 16,
+                "evidence": "不能让模型随便调用工具",
+                "reason": "有权限边界意识，但缺少完整业务例子。",
+                "teaching": "用黑板批改举例，说明先冻结标准、再评分、最后校验证据。"
+              }
+            ],
+            "strengths": [
+              {
+                "evidence": "不能让模型随便调用工具",
+                "whyGood": "说明已经意识到 Agent 能力越强，越需要权限边界。"
+              }
+            ],
+            "direction": "partly_correct",
+            "correctionPath": "保留“可复用任务规范”和“权限边界”，再补清三者分工，并用一条真实工作流证明 Skill 如何稳定质量。",
+            "priorityFix": "先把 Skill、Prompt、工具接口各用一句话说清楚。",
+            "requirementMap": [
+              {
+                "referencePoint": "Skill 是可复用、可版本管理的能力规范",
+                "relation": "covered",
+                "evidence": "把一个任务的做法固定下来",
+                "assessment": "核心方向正确。",
+                "teaching": "再补版本、测试与验收。"
+              },
+              {
+                "referencePoint": "Prompt 与工具接口的区别",
+                "relation": "partial",
+                "evidence": "里面会有 Prompt 和工具",
+                "assessment": "只提到组成，没有讲清职责。",
+                "teaching": "分别说明输入指令与真实执行。"
+              },
+              {
+                "referencePoint": "具体业务例子",
+                "relation": "not_covered",
+                "evidence": "",
+                "assessment": "没有用例，回答还不够落地。",
+                "teaching": "加入黑板批改 Skill 的完整链路。"
+              }
+            ],
+            "plainLanguageCoaching": {
+              "what_you_did_well": "你已经知道 Skill 不是孤立提示词，而且注意到了工具权限。",
+              "remember": "Skill 管做法，Prompt 管本轮怎么说，工具管真正怎么做。",
+              "answer_structure": [
+                "先下定义",
+                "再区分相邻概念",
+                "最后用具体链路举例"
+              ]
+            }
+          },
+          "updatedAt": "2026-08-29T10:20:00+08:00"
+        }
+      ],
+      "cozy_orchard_seeds": [
+        {
+          "id": "demo_seed_agent",
+          "text": "把 Agent 从演示做成可靠产品",
+          "category": "AI 产品与系统",
+          "stage": 3,
+          "wateredDates": [
+            "2026-08-26",
+            "2026-08-27",
+            "2026-08-28"
+          ]
+        },
+        {
+          "id": "demo_seed_eval",
+          "text": "AI 功能的评测与上线判断",
+          "category": "评测与数据",
+          "stage": 2,
+          "wateredDates": [
+            "2026-08-27",
+            "2026-08-28"
+          ]
+        }
+      ],
+      "cozy_orchard_topics": [
+        {
+          "id": "demo_topic_agent",
+          "title": "Agent 产品的可靠执行闭环",
+          "category": "Agent 与自动化",
+          "centralQuestion": "怎样让 Agent 不只会演示，而是能在真实业务中可靠完成任务？",
+          "summary": "从任务价值、权限边界、执行验证和失败恢复四层设计 Agent。",
+          "framework": [
+            "先证明任务价值",
+            "按风险分配权限",
+            "验证真实执行结果",
+            "为失败准备恢复路径"
+          ],
+          "sections": [
+            {
+              "title": "任务价值与边界",
+              "content": "先定义目标用户、真实任务和旧方案基线，避免把能调用工具误当成产生价值。",
+              "keyPoints": [
+                "用任务完成率而不是对话轮数衡量",
+                "高风险动作必须缩小自动执行范围"
+              ],
+              "example": "客服 Agent 先只处理低风险查询，高风险退款保留人工确认。"
+            },
+            {
+              "title": "执行与验证",
+              "content": "工具返回不等于任务完成，需要用业务状态、回读结果或副作用记录进行核验。",
+              "keyPoints": [
+                "每一步有明确成功条件",
+                "未知状态不能包装成成功"
+              ],
+              "caution": "不要只记录模型说了什么，要记录系统实际改变了什么。"
+            },
+            {
+              "title": "失败恢复",
+              "content": "把超时、模型空返回、存储额度和重复提交分别处理。",
+              "steps": [
+                "保存任务编号和进行中状态",
+                "可重试错误退避重试",
+                "关键结果写入兜底存储",
+                "恢复后合并最新版本"
+              ]
+            }
+          ],
+          "reviewPoints": [
+            "Agent = 目标驱动的受控执行，不等于一次模型调用",
+            "高风险动作要确认、审计和回滚",
+            "结果必须回读验证",
+            "失败状态要能被用户理解并恢复"
+          ],
+          "caseStudy": {
+            "title": "黑板批改任务",
+            "context": "用户提交产品训练答案后，模型可能超时或返回非 JSON。",
+            "analysis": "系统先冻结题目与评分基准，模型只负责按结构评分；返回后经过 JSON 清洗、字段校验与证据核对。若 KV 超额，结果先进入 R2 兜底并保留任务状态。",
+            "conclusion": "可靠性来自受控流程和可验证状态，而不是依赖模型每次都完美。"
+          },
+          "entries": [
+            {
+              "id": "demo_topic_entry_1",
+              "title": "黑板答题复盘",
+              "question": "产品讨论：你怎么理解 Agent Skill？它与 Prompt、工具接口有什么区别，为什么产品需要它？",
+              "insight": "Skill、Prompt 和工具接口要分层说明。",
+              "answer": "方向正确，已经区分 Skill 与工具并提到权限，但 Prompt、执行接口和验收标准之间的边界还不够清楚。",
+              "source": "blackboard",
+              "date": "2026-08-29"
+            },
+            {
+              "id": "demo_topic_entry_2",
+              "title": "资讯阅读笔记",
+              "question": "Agent 产品为什么重视结果验证？",
+              "insight": "用户需要的是任务完成，不是模型宣称完成。",
+              "answer": "把执行副作用、回读状态和失败恢复纳入产品闭环。",
+              "source": "noticeboard",
+              "date": "2026-08-28"
+            }
+          ],
+          "updatedAt": "2026-08-29T11:00:00+08:00"
+        }
+      ],
+      "cozy_orchard_chat_sessions": [
+        {
+          "id": "demo_chat_agent",
+          "title": "Skill、Prompt 和工具怎么区分",
+          "createdAt": "2026-08-28T20:10:00+08:00",
+          "updatedAt": "2026-08-28T20:18:00+08:00",
+          "messages": [
+            {
+              "role": "owner",
+              "text": "Skill 和 Prompt 到底有什么区别？"
+            },
+            {
+              "role": "butler",
+              "text": "Prompt 是一次调用中的指令；Skill 是可复用的任务规范，会把输入、步骤、工具、边界、输出和验收组织起来。"
+            },
+            {
+              "role": "owner",
+              "text": "那 Skill 自己会执行吗？"
+            },
+            {
+              "role": "butler",
+              "text": "不会。Skill 规定应该怎样做，Worker、模型和接口才是真正的执行者。"
+            }
+          ]
+        }
+      ],
+      "cozy_heart_entries": [
+        {
+          "id": "demo_heart_1",
+          "mode": "dialogue",
+          "date": "2026-08-27",
+          "time": "22:18",
+          "transcript": "今天把一个拖了很久的决定写下来后，反而没有想象中那么害怕。",
+          "echo": "也许决定没有替你消除不确定，只是把你从反复犹豫里领了出来。"
+        },
+        {
+          "id": "demo_heart_2",
+          "mode": "dialogue",
+          "date": "2026-08-27",
+          "time": "22:26",
+          "transcript": "我发现自己真正舍不得的不是原来的安排，而是那个一直想把所有事都做好的自己。",
+          "echo": "那份认真不用丢掉，只需要从“什么都不能错”变成“我愿意承担选择”。"
+        },
+        {
+          "id": "demo_heart_3",
+          "mode": "oracle",
+          "date": "2026-08-24",
+          "time": "23:04",
+          "transcript": "下雨后在站台等了很久，突然觉得安静也没有那么坏。",
+          "echo": "有些停顿不是耽误，是心终于追上了脚步。"
+        }
+      ],
+      "cozy_hollow_buried_media": [
+        {
+          "id": "demo_memory_departure",
+          "date": "2026-08-27",
+          "title": "重新出发的清晨",
+          "summary": "几段关于选择与告别的对话被整理成同一段记忆：不是忽然变得勇敢，而是终于愿意带着不确定继续走。",
+          "file": "assets/demo/heart-new-departure.jpg",
+          "status": "ready",
+          "transcripts": [
+            "今天把一个拖了很久的决定写下来后，反而没有想象中那么害怕。",
+            "我真正舍不得的是那个一直想把所有事都做好的自己。"
+          ],
+          "createdAt": "2026-08-27T04:00:00+08:00"
+        },
+        {
+          "id": "demo_memory_rain",
+          "date": "2026-08-24",
+          "title": "雨停之前",
+          "summary": "一次普通的等待，因为情绪从焦躁慢慢落回安静，成为值得留下的片段。",
+          "file": "assets/demo/heart-rain-stop.jpg",
+          "status": "ready",
+          "transcripts": [
+            "下雨后在站台等了很久，突然觉得安静也没有那么坏。"
+          ],
+          "createdAt": "2026-08-24T04:00:00+08:00"
+        },
+        {
+          "id": "demo_memory_desk",
+          "date": "2026-08-21",
+          "title": "深夜写下来的答案",
+          "summary": "没有突然想通一切，只是把混乱逐句写清楚，给第二天留下一个可以开始的位置。",
+          "file": "assets/demo/heart-night-desk.jpg",
+          "status": "ready",
+          "createdAt": "2026-08-21T04:00:00+08:00"
+        }
+      ],
+      "cozy_trips": [
+        {
+          "id": "demo_trip_hangzhou",
+          "place": "杭州西湖",
+          "activity": "湖边散步与产品观察",
+          "start": "2026-08-17",
+          "end": "2026-08-18",
+          "summary": "傍晚沿着湖边走了一圈，刻意没有赶行程。看到很多人在同一条路上用不同速度前进，也重新理解了产品体验里的节奏与留白。",
+          "line": "不是所有体验都要塞满，合适的停顿也在帮助用户前进。",
+          "status": "completed",
+          "photos": [
+            "assets/travel/travel_postcard.webp"
+          ],
+          "updatedAt": "2026-08-18T19:30:00+08:00"
+        }
+      ],
+      "cozy_trip_reflections": {
+        "demo_trip_hangzhou": [
+          {
+            "id": "demo_reflection",
+            "date": "2026-08-18",
+            "title": "慢下来之后看见的东西",
+            "text": "做产品时总想多给用户一点，但这次旅行提醒我：清晰的节奏和适当的留白，本身也是一种帮助。",
+            "summary": "从旅行中的慢节奏，联想到产品体验需要给用户留出理解和选择的空间。",
+            "reply": "你记住的不是景点清单，而是一种重新看待节奏的方法。"
+          }
+        ]
+      },
+      "cozy_notice_requests": []
+    }
+  },
+  "heart_hollow": {
+    "version": 2,
+    "updated_at": "2026-08-29T20:02:41.952Z",
+    "entries": [
+      {
+        "id": "demo_heart_1",
+        "mode": "dialogue",
+        "date": "2026-08-27",
+        "time": "22:18",
+        "transcript": "今天把一个拖了很久的决定写下来后，反而没有想象中那么害怕。",
+        "echo": "也许决定没有替你消除不确定，只是把你从反复犹豫里领了出来。"
+      },
+      {
+        "id": "demo_heart_2",
+        "mode": "dialogue",
+        "date": "2026-08-27",
+        "time": "22:26",
+        "transcript": "我发现自己真正舍不得的不是原来的安排，而是那个一直想把所有事都做好的自己。",
+        "echo": "那份认真不用丢掉，只需要从“什么都不能错”变成“我愿意承担选择”。"
+      },
+      {
+        "id": "demo_heart_3",
+        "mode": "oracle",
+        "date": "2026-08-24",
+        "time": "23:04",
+        "transcript": "下雨后在站台等了很久，突然觉得安静也没有那么坏。",
+        "echo": "有些停顿不是耽误，是心终于追上了脚步。"
+      }
+    ],
+    "settings": {
+      "demo": true
+    }
+  },
+  "demo_memory": {
+    "events": [
+      {
+        "id": "demo_evt_blackboard",
+        "source": "blackboard",
+        "kind": "insight",
+        "summary": "回答概念题时容易先给结论，但需要继续区分相邻概念并补完整业务例子。",
+        "content": "Skill、Prompt 和工具接口要分别说明职责，再用黑板批改链路举例。",
+        "date": "2026-08-29",
+        "created_at": "2026-08-29T10:20:00+08:00",
+        "remember": true,
+        "explicit": true,
+        "scope": "learning_format"
+      },
+      {
+        "id": "demo_evt_orchard",
+        "source": "orchard",
+        "kind": "insight",
+        "summary": "学习 Agent 产品时更容易通过完整工作流和失败案例理解抽象概念。",
+        "content": "从触发、计划、执行、验证、恢复五步理解 Agent。",
+        "date": "2026-08-28",
+        "created_at": "2026-08-28T20:18:00+08:00",
+        "remember": true,
+        "explicit": true,
+        "scope": "learning_format"
+      },
+      {
+        "id": "demo_evt_notice",
+        "source": "noticeboard",
+        "kind": "insight",
+        "summary": "关注 AI 产品能否进入真实工作流，以及权限、成本和失败恢复是否形成闭环。",
+        "content": "资讯阅读重点从模型发布转向产品可交付性。",
+        "date": "2026-08-28",
+        "created_at": "2026-08-28T09:20:00+08:00",
+        "remember": true,
+        "explicit": true,
+        "scope": "topic_selection"
+      },
+      {
+        "id": "demo_evt_travel",
+        "source": "travel",
+        "kind": "experience",
+        "summary": "杭州西湖散步让主人重新注意到节奏与留白也能改善体验。",
+        "content": "不是所有体验都要塞满，合适的停顿也在帮助用户前进。",
+        "date": "2026-08-18",
+        "created_at": "2026-08-18T19:30:00+08:00",
+        "remember": true,
+        "explicit": true,
+        "scope": "travel_only"
+      }
+    ],
+    "sealed": [
+      {
+        "id": "demo_evt_heart_1",
+        "source": "heart_hollow",
+        "kind": "experience",
+        "summary": "今天把一个拖了很久的决定写下来后，反而没有想象中那么害怕。",
+        "content": "今天把一个拖了很久的决定写下来后，反而没有想象中那么害怕。",
+        "date": "2026-08-27",
+        "created_at": "2026-08-27T22:18:00+08:00",
+        "sensitivity": "sealed",
+        "scope": "heart_only"
+      },
+      {
+        "id": "demo_evt_heart_2",
+        "source": "heart_hollow",
+        "kind": "experience",
+        "summary": "我发现自己真正舍不得的不是原来的安排，而是那个一直想把所有事都做好的自己。",
+        "content": "我发现自己真正舍不得的不是原来的安排，而是那个一直想把所有事都做好的自己。",
+        "date": "2026-08-27",
+        "created_at": "2026-08-27T22:26:00+08:00",
+        "sensitivity": "sealed",
+        "scope": "heart_only"
+      },
+      {
+        "id": "demo_evt_heart_3",
+        "source": "heart_hollow",
+        "kind": "experience",
+        "summary": "下雨后在站台等了很久，突然觉得安静也没有那么坏。",
+        "content": "下雨后在站台等了很久，突然觉得安静也没有那么坏。",
+        "date": "2026-08-24",
+        "created_at": "2026-08-24T23:04:00+08:00",
+        "sensitivity": "sealed",
+        "scope": "heart_only"
+      }
+    ],
+    "cards": [
+      {
+        "id": "card_1to0k9k",
+        "kind": "fact",
+        "title": "回答概念题时容易先给结论，但需要继续区分相邻概念并补完整业务例子。",
+        "statement": "回答概念题时容易先给结论，但需要继续区分相邻概念并补完整业务例子。",
+        "category_id": "growth",
+        "status": "active",
+        "confidence": 0.96,
+        "evidence_ids": [
+          "demo_evt_blackboard"
+        ],
+        "evidence_count": 1,
+        "scope": "learning_format",
+        "sensitivity": "personal",
+        "source": "blackboard",
+        "signature": "fact|回答概念题时容易先给结论但需要继续区分相邻概念并补完整业务例子",
+        "created_at": "2026-08-29T10:20:00+08:00",
+        "updated_at": "2026-08-29T10:20:00+08:00"
+      },
+      {
+        "id": "card_7cisvq",
+        "kind": "project",
+        "title": "学习 Agent 产品时更容易通过完整工作流和失败案例理解抽象概念。",
+        "statement": "学习 Agent 产品时更容易通过完整工作流和失败案例理解抽象概念。",
+        "category_id": "growth",
+        "status": "active",
+        "confidence": 0.96,
+        "evidence_ids": [
+          "demo_evt_orchard"
+        ],
+        "evidence_count": 1,
+        "scope": "learning_format",
+        "sensitivity": "personal",
+        "source": "orchard",
+        "signature": "fact|学习agent产品时更容易通过完整工作流和失败案例理解抽象概念",
+        "created_at": "2026-08-28T20:18:00+08:00",
+        "updated_at": "2026-08-28T20:18:00+08:00"
+      },
+      {
+        "id": "card_2z1rsm",
+        "kind": "project",
+        "title": "关注 AI 产品能否进入真实工作流，以及权限、成本和失败恢复是否形成闭环。",
+        "statement": "关注 AI 产品能否进入真实工作流，以及权限、成本和失败恢复是否形成闭环。",
+        "category_id": "knowledge",
+        "status": "active",
+        "confidence": 0.96,
+        "evidence_ids": [
+          "demo_evt_notice"
+        ],
+        "evidence_count": 1,
+        "scope": "topic_selection",
+        "sensitivity": "personal",
+        "source": "noticeboard",
+        "signature": "fact|关注ai产品能否进入真实工作流以及权限成本和失败恢复是否形成闭环",
+        "created_at": "2026-08-28T09:20:00+08:00",
+        "updated_at": "2026-08-28T09:20:00+08:00"
+      },
+      {
+        "id": "card_4h14ow",
+        "kind": "fact",
+        "title": "杭州西湖散步让主人重新注意到节奏与留白也能改善体验。",
+        "statement": "杭州西湖散步让主人重新注意到节奏与留白也能改善体验。",
+        "category_id": "life",
+        "status": "active",
+        "confidence": 0.96,
+        "evidence_ids": [
+          "demo_evt_travel"
+        ],
+        "evidence_count": 1,
+        "scope": "travel_only",
+        "sensitivity": "personal",
+        "source": "travel",
+        "signature": "fact|杭州西湖散步让主人重新注意到节奏与留白也能改善体验",
+        "created_at": "2026-08-18T19:30:00+08:00",
+        "updated_at": "2026-08-18T19:30:00+08:00"
+      }
+    ],
+    "categories": [
+      {
+        "id": "preferences",
+        "name": "偏好与习惯",
+        "system": true,
+        "status": "active"
+      },
+      {
+        "id": "growth",
+        "name": "成长与方向",
+        "system": true,
+        "status": "active"
+      },
+      {
+        "id": "knowledge",
+        "name": "知识关注",
+        "system": true,
+        "status": "active"
+      },
+      {
+        "id": "life",
+        "name": "生活与旅行",
+        "system": true,
+        "status": "active"
+      },
+      {
+        "id": "general",
+        "name": "其他",
+        "system": true,
+        "status": "active"
+      }
+    ],
+    "long": [
+      {
+        "id": "card_1to0k9k",
+        "kind": "fact",
+        "title": "回答概念题时容易先给结论，但需要继续区分相邻概念并补完整业务例子。",
+        "statement": "回答概念题时容易先给结论，但需要继续区分相邻概念并补完整业务例子。",
+        "category_id": "growth",
+        "status": "active",
+        "confidence": 0.96,
+        "evidence_ids": [
+          "demo_evt_blackboard"
+        ],
+        "evidence_count": 1,
+        "scope": "learning_format",
+        "sensitivity": "personal",
+        "source": "blackboard",
+        "signature": "fact|回答概念题时容易先给结论但需要继续区分相邻概念并补完整业务例子",
+        "created_at": "2026-08-29T10:20:00+08:00",
+        "updated_at": "2026-08-29T10:20:00+08:00"
+      },
+      {
+        "id": "card_7cisvq",
+        "kind": "project",
+        "title": "学习 Agent 产品时更容易通过完整工作流和失败案例理解抽象概念。",
+        "statement": "学习 Agent 产品时更容易通过完整工作流和失败案例理解抽象概念。",
+        "category_id": "growth",
+        "status": "active",
+        "confidence": 0.96,
+        "evidence_ids": [
+          "demo_evt_orchard"
+        ],
+        "evidence_count": 1,
+        "scope": "learning_format",
+        "sensitivity": "personal",
+        "source": "orchard",
+        "signature": "fact|学习agent产品时更容易通过完整工作流和失败案例理解抽象概念",
+        "created_at": "2026-08-28T20:18:00+08:00",
+        "updated_at": "2026-08-28T20:18:00+08:00"
+      },
+      {
+        "id": "card_2z1rsm",
+        "kind": "project",
+        "title": "关注 AI 产品能否进入真实工作流，以及权限、成本和失败恢复是否形成闭环。",
+        "statement": "关注 AI 产品能否进入真实工作流，以及权限、成本和失败恢复是否形成闭环。",
+        "category_id": "knowledge",
+        "status": "active",
+        "confidence": 0.96,
+        "evidence_ids": [
+          "demo_evt_notice"
+        ],
+        "evidence_count": 1,
+        "scope": "topic_selection",
+        "sensitivity": "personal",
+        "source": "noticeboard",
+        "signature": "fact|关注ai产品能否进入真实工作流以及权限成本和失败恢复是否形成闭环",
+        "created_at": "2026-08-28T09:20:00+08:00",
+        "updated_at": "2026-08-28T09:20:00+08:00"
+      },
+      {
+        "id": "card_4h14ow",
+        "kind": "fact",
+        "title": "杭州西湖散步让主人重新注意到节奏与留白也能改善体验。",
+        "statement": "杭州西湖散步让主人重新注意到节奏与留白也能改善体验。",
+        "category_id": "life",
+        "status": "active",
+        "confidence": 0.96,
+        "evidence_ids": [
+          "demo_evt_travel"
+        ],
+        "evidence_count": 1,
+        "scope": "travel_only",
+        "sensitivity": "personal",
+        "source": "travel",
+        "signature": "fact|杭州西湖散步让主人重新注意到节奏与留白也能改善体验",
+        "created_at": "2026-08-18T19:30:00+08:00",
+        "updated_at": "2026-08-18T19:30:00+08:00"
+      }
+    ],
+    "short": [],
+    "preferences": [],
+    "category_suggestions": [],
+    "profile": {
+      "version": 2,
+      "generator": "ai_distillation",
+      "generated_at": "2026-08-29T04:00:00+08:00",
+      "source_card_ids": [],
+      "archives": {
+        "growth": {
+          "title": "成长档案",
+          "sections": [
+            {
+              "title": "学习与表达方式",
+              "text": "主人适合通过具体案例、对照边界和完整工作流理解抽象概念。近期黑板复盘显示，核心判断通常方向正确，但需要继续补足概念区分、因果链和可验证例子。"
+            },
+            {
+              "title": "AI 产品关注",
+              "text": "近期持续关注 Agent、评测、长期记忆与可靠性，更在意产品是否能进入真实工作流，而不是只看一次演示效果。"
+            }
+          ],
+          "source_count": 3,
+          "basis": "黑板、成长田与资讯笔记"
+        },
+        "emotional": {
+          "title": "情感档案",
+          "sections": [
+            {
+              "title": "从追求万无一失到愿意承担选择",
+              "text": "最近几段对话都围绕选择展开。情绪并不是因为不确定消失，而是在把担心说清楚后，逐渐从反复犹豫转向愿意行动。"
+            },
+            {
+              "title": "安静正在变成一种恢复方式",
+              "text": "雨天等待和深夜书写都显示，主人有时会通过独处、记录和慢下来重新获得秩序感。"
+            }
+          ],
+          "moments": [
+            {
+              "text": "我发现自己真正舍不得的不是原来的安排，而是那个一直想把所有事都做好的自己。",
+              "source_event_id": "demo_evt_heart_2",
+              "date": "2026-08-27"
+            },
+            {
+              "text": "下雨后在站台等了很久，突然觉得安静也没有那么坏。",
+              "source_event_id": "demo_evt_heart_3",
+              "date": "2026-08-24"
+            }
+          ],
+          "source_count": 3,
+          "basis": "树洞对话与旅行记录",
+          "generated_at": "2026-08-29T04:00:00+08:00"
+        }
+      }
+    },
+    "inner_profile": {
+      "sections": [],
+      "moments": [],
+      "source_count": 3,
+      "generated_at": "2026-08-29T20:02:41.960Z"
+    },
+    "policy": {
+      "repeat_to_promote": 3,
+      "preference_repeat_to_confirm": 2,
+      "auto_category_min_cards": 3,
+      "sealed_context": "never_injected",
+      "max_learning_preferences_per_reply": 5,
+      "max_companion_memories_per_reply": 2,
+      "recent_use_exclusion": true,
+      "diversity_guard": "记忆只调整讲解方式，不替代事实判断；陪伴场景也不屏蔽相反观点，不把一次经历反复定义成主人"
+    }
+  },
+  "demo_distillation": {
+    "status": "completed",
+    "last_success": "2026-08-29T04:00:00+08:00",
+    "provider": "demo-seed",
+    "schedule": "weekly_sunday_04_00_asia_shanghai",
+    "recent_runs": []
+  }
+}

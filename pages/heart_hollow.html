@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#dbe8e7" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="阿栗" />
+<link rel="manifest" href="../manifest.webmanifest" />
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/app/icon-180.png" />
+<title>树洞</title>
+<script src="../core/runtime-config.js"></script>
+<script src="../core/runtime.js"></script>
+<script src="../core/data.js"></script>
+<script src="../core/memory.js"></script>
+<script src="../logger.js"></script>
+<script src="../core/pwa.js" defer></script>
+<script src="../core/butler_widget.js" defer></script>
+<script src="../core/mobile.js" defer></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  button,input,textarea,select{font-family:inherit;letter-spacing:0}
+  body{font-family:"PingFang SC","Hiragino Sans GB",serif;min-height:100vh;
+     background:linear-gradient(180deg,#dce9e8,#b8cbc5);color:#38524f;
+     display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden}
+  .hollow-stage{position:relative;width:100vw;height:100vh;overflow:hidden;border-radius:0;
+     display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 16px;
+     box-shadow:none;isolation:isolate}
+  .hollow-stage:before{content:"";position:absolute;inset:0;background:
+     linear-gradient(180deg,rgba(218,235,237,.08),rgba(38,65,60,.22)),
+     url("../assets/estate/heart_hollow.webp") center/cover no-repeat;z-index:-2}
+  .hollow-stage:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(235,247,245,0) 0 38%,rgba(33,62,58,.26) 100%);z-index:-1}
+  .back{position:fixed;left:18px;top:16px;z-index:10;color:#315e5b;text-decoration:none;font-size:14px;
+     background:rgba(247,251,247,.86);border:1px solid rgba(91,126,116,.25);padding:6px 12px;border-radius:20px;backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(31,62,57,.12)}
+  .talk-btn{position:absolute;left:50%;bottom:11%;z-index:4;transform:translateX(-50%);
+     width:64px;height:64px;border:1px solid rgba(119,158,143,.32);border-radius:50%;background:rgba(218,237,226,.58);color:#52796d;cursor:pointer;
+     filter:drop-shadow(0 8px 15px rgba(27,59,54,.22));display:grid;place-items:center;backdrop-filter:blur(9px);
+     transition:transform .18s ease,filter .18s ease}
+  .talk-btn:hover{transform:translateX(-50%) translateY(-2px);filter:drop-shadow(0 10px 18px rgba(27,59,54,.55))}
+  .talk-btn.starting{opacity:.78}
+  .talk-btn.listening{filter:drop-shadow(0 0 15px rgba(181,230,218,.8))}
+  .talk-btn.listening .voice-wave{animation:voicePulse 1.5s ease-out infinite}
+  .talk-btn.stopping{opacity:.72;cursor:wait}
+  @keyframes voicePulse{0%{transform:scale(.86);opacity:.7}100%{transform:scale(1.45);opacity:0}}
+  .voice-icon{position:relative;width:34px;height:42px;display:block}
+  .voice-icon:before{content:"";position:absolute;left:50%;top:1px;width:16px;height:25px;border-radius:10px;
+     transform:translateX(-50%);
+     background:linear-gradient(180deg,rgba(238,249,242,.96),rgba(157,199,180,.86));
+     box-shadow:0 0 12px rgba(195,230,211,.42)}
+  .voice-icon:after{content:"";position:absolute;left:50%;top:19px;width:24px;height:14px;
+     transform:translateX(-50%);
+     border:2px solid rgba(82,121,109,.82);border-top:0;border-radius:0 0 13px 13px}
+  .voice-stem{position:absolute;left:50%;top:32px;width:3px;height:8px;border-radius:2px;background:rgba(82,121,109,.82);
+     transform:translateX(-50%)}
+  .voice-stem:after{content:"";position:absolute;left:50%;top:7px;width:18px;height:2px;border-radius:2px;background:rgba(82,121,109,.78);
+     transform:translateX(-50%)}
+  .voice-wave{position:absolute;inset:-8px;border:1px solid transparent;border-radius:50%;opacity:0}
+  .talk-btn.listening .voice-wave{border-color:rgba(202,239,229,.6);opacity:.8}
+  .talk-status{position:absolute;left:50%;bottom:19%;z-index:4;transform:translateX(-50%);
+     color:#315e5b;background:rgba(247,251,247,.9);border:1px solid rgba(91,126,116,.24);padding:6px 12px;border-radius:999px;
+     font-size:12px;opacity:0;transition:opacity .2s ease;backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(31,62,57,.12)}
+  .talk-status.show{opacity:1}
+  .talk-status.persistent{opacity:1}
+  .tree-reply{position:absolute;left:50%;bottom:25%;z-index:4;width:min(560px,82vw);transform:translate(-50%,8px);
+     color:#f7fff9;text-align:center;font-size:16px;line-height:1.8;text-shadow:0 2px 12px rgba(25,54,50,.75);
+     opacity:0;pointer-events:none;transition:opacity .35s ease,transform .35s ease}
+  .tree-reply.show{opacity:1;transform:translate(-50%,0)}
+  .tree-reply.dialogue{font-size:14px;text-align:left;padding:11px 14px;border:1px solid rgba(216,236,230,.26);border-radius:8px;background:rgba(42,75,69,.7);backdrop-filter:blur(10px)}
+  .hollow-mode{position:absolute;left:50%;bottom:3.5%;z-index:4;transform:translateX(-50%);display:flex;gap:2px;padding:3px;
+     border:1px solid rgba(91,126,116,.25);border-radius:999px;background:rgba(247,251,247,.82);box-shadow:0 7px 20px rgba(31,62,57,.13);backdrop-filter:blur(10px)}
+  .hollow-mode button{min-width:54px;border:0;border-radius:999px;padding:6px 11px;background:transparent;color:#69837d;font-family:inherit;font-size:12px;cursor:pointer}
+  .hollow-mode button.active{background:#668f82;color:#fff;font-weight:600;box-shadow:0 2px 7px rgba(51,89,79,.24)}
+  .quiet-type{position:absolute;right:22px;bottom:22px;z-index:4}
+  .quiet-type summary{list-style:none;font-size:12px;color:#315e5b;cursor:pointer;
+     background:rgba(247,251,247,.86);border:1px solid rgba(91,126,116,.25);border-radius:999px;padding:7px 11px;box-shadow:0 6px 18px rgba(31,62,57,.12);backdrop-filter:blur(8px)}
+  .live-transcript{position:absolute;left:50%;top:36%;z-index:4;width:min(620px,76vw);transform:translate(-50%,-50%);text-align:center;color:rgba(246,255,251,.9);font-size:17px;line-height:1.8;text-shadow:0 2px 16px rgba(23,53,48,.85);opacity:0;transition:opacity .2s ease;pointer-events:none;white-space:pre-wrap}
+  .live-transcript.show{opacity:1}
+  /* 月份索引 */
+  .months{display:flex;gap:7px;overflow:auto;padding:0 0 10px;scrollbar-width:thin}
+  .months button{border:1px solid rgba(91,126,116,.2);background:#eef5f2;color:#55726b;padding:5px 12px;
+     border-radius:16px;font-size:12px;cursor:pointer}
+  .months button.active{background:#668f82;color:#fff;font-weight:600}
+  /* 输入区 */
+  .composer{width:min(360px,82vw);margin:10px 0 0;background:rgba(247,251,247,.94);border:1px solid rgba(91,126,116,.22);
+     border-radius:16px;padding:12px 14px;backdrop-filter:blur(10px);box-shadow:0 16px 40px rgba(31,62,57,.2)}
+  .composer textarea{width:100%;min-height:60px;border:0;border-radius:10px;padding:12px;
+     font-size:15px;resize:vertical;font-family:inherit;background:#fff;color:#38524f;box-shadow:inset 0 0 0 1px rgba(91,126,116,.18)}
+  .composer .btns{display:flex;gap:10px;margin-top:10px;align-items:center}
+  .composer button{border:0;border-radius:20px;padding:8px 18px;cursor:pointer;font-size:14px}
+  .write-mode{display:flex;align-items:center;gap:5px;margin-bottom:9px;color:#78908a;font-size:10px}.write-mode>span{margin-right:auto}.write-mode button{padding:4px 9px;border:1px solid rgba(91,126,116,.18);background:#edf4f1;color:#638078;font-size:10px}.write-mode button.active{background:#668f82;color:#fff;border-color:#668f82}
+  .mic{background:#e5f0ed;color:#456d63}
+  .send{background:#668f82;color:#fff;font-weight:600}
+  .hint{color:#78908a;font-size:12px}
+  .nav{display:flex;justify-content:space-between;max-width:780px;width:100%;margin-top:10px}
+  .nav button{background:rgba(247,251,247,.86);color:#315e5b;border:1px solid rgba(91,126,116,.22);border-radius:20px;padding:6px 16px;cursor:pointer;font-size:13px}
+  .history-wrap{display:none;position:absolute;left:2vw;right:2vw;bottom:2vh;z-index:8;height:min(90vh,900px);overflow:hidden;background:rgba(244,249,247,.96);color:#38524f;border:1px solid rgba(91,126,116,.2);border-radius:16px;box-shadow:0 26px 70px rgba(24,55,50,.3);backdrop-filter:blur(14px)}
+  .hollow-stage.history-unlocked .history-wrap{display:block}
+  .history-close{position:absolute;right:12px;top:12px;z-index:3;width:34px;height:34px;border:0;border-radius:50%;background:#e3eeea;color:#456d63;font-size:20px;cursor:pointer}
+  .history-tabs{position:absolute;left:22px;right:58px;top:12px;z-index:2;display:flex;gap:4px;padding:3px;border:1px solid rgba(91,126,116,.16);border-radius:9px;background:rgba(230,240,236,.82);width:max-content;max-width:calc(100% - 80px)}
+  .history-tabs button{border:0;border-radius:7px;background:transparent;color:#668078;padding:7px 13px;font-size:12px;cursor:pointer;white-space:nowrap}.history-tabs button.active{background:#668f82;color:#fff;font-weight:600}
+  .history-panel{position:absolute;inset:55px 0 0;overflow:auto;padding:12px 24px 24px}.history-panel[hidden]{display:none}
+  .buried-wrap{padding-top:14px}
+  .history-main{background:rgba(247,251,248,.56)}
+  .buried-wrap h2{font-size:16px;color:#365f57;margin-bottom:12px}
+  .buried-card{display:grid;gap:12px;background:#fff;border:1px solid rgba(91,126,116,.14);border-radius:12px;padding:10px;margin:10px 0 18px}
+  .buried-thumb{width:100%;height:clamp(280px,45vh,350px);min-height:0;border-radius:9px;background:linear-gradient(135deg,#bad0c7,#dce9e8) center/cover no-repeat;
+     display:flex;align-items:center;justify-content:center;color:#365f57;font-size:13px;font-weight:700}
+  .buried-thumb:not([style]){flex-direction:column;gap:7px;padding:18px;text-align:center}.buried-thumb small{max-width:92%;font-size:10px;line-height:1.55;font-weight:500;color:rgba(255,248,232,.9)}
+  .buried-thumb.status-failed{background:#8f6d64;color:#fff7ef}.buried-thumb.status-waiting{background:linear-gradient(135deg,#8fa080,#c7b98f)}
+  .buried-card h3{font-size:16px;color:#38524f;margin-bottom:5px}
+  .buried-card p{font-size:13px;line-height:1.7;color:#617871}
+  .buried-meta{display:flex;gap:7px;align-items:center;margin-bottom:6px;color:#829891;font-size:10px}.buried-state{padding:2px 6px;border-radius:999px;background:#e6efeb;color:#58776f}.buried-state.waiting{background:#eee9d7;color:#81734b}.buried-state.failed{background:#f1e2df;color:#93655d}
+  .nightly-waiting{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 14px;padding:11px 12px;border-bottom:1px solid rgba(91,126,116,.18);color:#526f68;font-size:12px}.nightly-waiting strong{font-size:13px}.nightly-waiting span{color:#829891;text-align:right}
+  .buried-card button{border:0;border-radius:999px;background:#668f82;color:#fff;padding:5px 9px;font-family:inherit;font-size:10px;margin-top:5px;cursor:pointer}
+  .buried-actions{display:flex;gap:7px;flex-wrap:wrap}.buried-actions button.danger{background:#9a6f67}
+  .buried-editor{display:grid;gap:8px}.buried-editor input,.buried-editor textarea{width:100%;box-sizing:border-box;border:1px solid rgba(91,70,48,.2);border-radius:8px;background:rgba(255,255,255,.72);color:#4a3b2b;padding:8px 10px;font-family:inherit;font-size:13px;line-height:1.6;outline:none}.buried-editor textarea{min-height:110px;resize:vertical}.buried-editor input:focus,.buried-editor textarea:focus{border-color:#87936f;box-shadow:0 0 0 2px rgba(121,135,101,.12)}
+  .grass-secret{position:fixed;left:0;right:0;bottom:0;height:18%;z-index:2;border:0;background:transparent;cursor:default}
+  .day-card{border-bottom:1px dashed rgba(91,126,116,.24);padding:12px 0}
+  .day-card:last-child{border-bottom:0}
+  .day-card h2{font-size:14px;color:#365f57;margin-bottom:8px}
+  .memory-item{font-size:13px;line-height:1.65;margin:8px 0;padding:8px 10px;border-radius:12px;background:#fff;border:1px solid rgba(91,126,116,.12)}
+  .memory-item .time{display:flex;align-items:center;gap:6px;font-size:11px;color:#829891;margin-bottom:4px}
+  .memory-mode{display:inline-flex;padding:2px 6px;border-radius:999px;font-size:9px;background:#dcebe6;color:#456d63}.memory-mode.dialogue{background:#dce8ef;color:#496c7a}
+  .memory-item .echo-line{color:#4e796d;margin-top:4px}
+  .memory-actions{display:flex;gap:6px;margin-top:7px}.memory-actions button{border:0;border-radius:999px;background:rgba(105,88,65,.09);color:#806b53;padding:4px 8px;font-family:inherit;font-size:10px;cursor:pointer}.memory-actions button.danger{color:#9a655d}.memory-editor{display:grid;gap:7px}.memory-editor textarea{width:100%;min-height:72px;box-sizing:border-box;border:1px solid rgba(91,70,48,.18);border-radius:8px;background:rgba(255,255,255,.72);color:#4a3b2b;padding:8px;font-family:inherit;font-size:12px;line-height:1.6;resize:vertical}.memory-editor label{font-size:10px;color:#927d64}
+  .history-open-mobile{display:none}
+  @media(max-width:760px){
+    body{padding-bottom:var(--mobile-nav-h,62px)}.back{display:none}.hollow-stage{height:calc(100dvh - var(--mobile-nav-h,62px));padding:12px}.hollow-stage:before{background-image:linear-gradient(180deg,rgba(218,235,237,.06),rgba(38,65,60,.23)),url("../assets/estate/heart_hollow_mobile.webp");background-position:center center}
+    .talk-btn{bottom:16%}.talk-status{bottom:25%}.tree-reply{bottom:31%;width:88vw;font-size:14px}.tree-reply.dialogue{font-size:13px}.hollow-mode{bottom:4%}.quiet-type{right:12px;bottom:12px}.quiet-type[open]{left:12px;right:12px;bottom:12px}.quiet-type[open] summary{margin-left:auto;width:max-content}.composer{width:100%;margin-top:7px;padding:11px}.composer textarea{min-height:74px;max-height:150px;font-size:16px}.composer button{font-size:12px}
+    .history-open-mobile{display:inline-flex;position:absolute;z-index:7;right:12px;top:max(12px,env(safe-area-inset-top));align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.28);border-radius:8px;background:rgba(40,70,64,.72);color:#fff;padding:8px 11px;font:600 12px/1.2 inherit;backdrop-filter:blur(8px)}
+    .history-wrap{position:fixed;left:0;right:0;top:0;bottom:var(--mobile-nav-h,62px);height:auto;border-radius:0}.history-tabs{position:fixed;left:12px;right:54px;top:max(10px,env(safe-area-inset-top));width:auto;overflow-x:auto}.history-tabs button{flex:1;padding:7px 8px}.history-panel{inset:54px 0 0;padding:12px 14px 18px}.buried-wrap{max-height:none;border:0}.buried-thumb{height:min(52vh,420px)}.history-close{position:fixed;top:max(10px,env(safe-area-inset-top));right:10px}.live-transcript{top:32%;width:86vw;font-size:15px}.nightly-waiting{align-items:flex-start;flex-direction:column;gap:3px}.nightly-waiting span{text-align:left}
+  }
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 回小院</a>
+<main class="hollow-stage" id="hollow-stage">
+<button class="grass-secret" aria-label="草坪" onclick="tapGrass()"></button>
+<button class="history-open-mobile" type="button" onclick="openHistory()">打开草堆</button>
+<button class="talk-btn" onclick="startVoice()" aria-label="倾诉" title="倾诉">
+  <span class="voice-wave"></span>
+  <span class="voice-icon"><span class="voice-stem"></span></span>
+</button>
+<div class="talk-status" id="voice-status"></div>
+<div class="live-transcript" id="live-transcript" aria-live="polite"></div>
+<div class="tree-reply" id="tree-reply" aria-live="polite"></div>
+<div class="hollow-mode" role="group" aria-label="树洞回应模式">
+  <button id="mode-oracle" class="active" type="button" onclick="setHollowMode('oracle')">签语</button>
+  <button id="mode-dialogue" type="button" onclick="setHollowMode('dialogue')">对话</button>
+</div>
+  <details class="quiet-type">
+    <summary>写</summary>
+    <div class="composer">
+      <div class="write-mode"><span>回应方式</span><button id="write-mode-oracle" type="button" onclick="setHollowMode('oracle')">签语</button><button id="write-mode-dialogue" type="button" onclick="setHollowMode('dialogue')">对话</button></div>
+      <textarea id="input" placeholder="轻轻写在这里……"></textarea>
+      <div class="btns">
+        <button class="send" id="heart-send" onclick="addEntry()">埋进树洞</button>
+        <span class="hint" id="hint"></span>
+      </div>
+    </div>
+  </details>
+
+<div class="history-wrap">
+  <button class="history-close" type="button" aria-label="关闭历史" title="关闭" onclick="closeHistory()">×</button>
+  <nav class="history-tabs" aria-label="草堆分类">
+    <button type="button" data-history-view="oracle" onclick="setHistoryView('oracle')">签语</button>
+    <button type="button" data-history-view="dialogue" onclick="setHistoryView('dialogue')">对话</button>
+    <button type="button" data-history-view="memory" onclick="setHistoryView('memory')">深刻记忆</button>
+  </nav>
+  <section class="history-panel history-main" id="history-entry-panel"><div class="months" id="months"></div><div id="day-history"></div></section>
+  <section class="history-panel buried-wrap" id="history-memory-panel" hidden>
+    <h2>草堆里的影像</h2>
+    <div id="buried-media"></div>
+  </section>
+</div>
+<input id="buried-upload" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden onchange="uploadBuriedPhoto(this.files&&this.files[0])">
+</main>
+
+<script>
+let CORE = {};
+let entries = [];
+let idx = 0;
+let filterMonth = 'all';
+let hollowMode = localStorage.getItem('cozy_hollow_mode') || 'oracle';
+let historyView = ['oracle','dialogue','memory'].includes(localStorage.getItem('cozy_hollow_history_view')) ? localStorage.getItem('cozy_hollow_history_view') : 'oracle';
+function stableHeartEntryId(entry){if(entry&&entry.id)return String(entry.id);let h=2166136261;for(const char of [entry?.date,entry?.time,entry?.transcript].join('|')){h^=char.charCodeAt(0);h=Math.imul(h,16777619);}return'heart_legacy_'+Math.abs(h>>>0).toString(36);}
+function hollowRecentMemoryIds(){try{return JSON.parse(localStorage.getItem('cozy_hollow_recent_memory_ids')||'[]').slice(0,6);}catch(error){return[];}}
+function hollowRecentReplyStyles(){try{return JSON.parse(localStorage.getItem('cozy_hollow_reply_styles')||'[]').slice(0,4);}catch(error){return[];}}
+function rememberHollowResponse(data){
+  const ids=Array.isArray(data?.memory_usage?.selected_ids)?data.memory_usage.selected_ids:[];
+  if(ids.length)localStorage.setItem('cozy_hollow_recent_memory_ids',JSON.stringify(Array.from(new Set(ids.concat(hollowRecentMemoryIds()))).slice(0,6)));
+  const style=String(data?.result?.response_style||'').trim();
+  if(style)localStorage.setItem('cozy_hollow_reply_styles',JSON.stringify([style].concat(hollowRecentReplyStyles().filter(value=>value!==style)).slice(0,4)));
+}
+
+async function load(){
+  CORE = window.CozyRuntime ? await window.CozyRuntime.loadJson('../core/heart_hollow.json',{entries:[]},'heart_hollow') : ((window.COZY && window.COZY.heart_hollow) || {entries:[]});
+  const localEntries = JSON.parse(localStorage.getItem('cozy_heart_entries') || '[]');
+  const deletedIds = new Set(JSON.parse(localStorage.getItem('cozy_heart_deleted_entries') || '[]').concat(localEntries.filter(item=>item.deleted).map(item=>item.id)));
+  const seen = new Set();
+  entries = localEntries.concat(CORE.entries||[]).filter(entry=>!entry.deleted).map(entry=>({...entry,id:stableHeartEntryId(entry)})).filter(entry=>{
+    const key=entry.id;
+    if(deletedIds.has(key))return false;
+    if(seen.has(key))return false;seen.add(key);return true;
+  }).sort((a,b)=> ((b.date||'')+(b.time||'')).localeCompare((a.date||'')+(a.time||'')));
+  renderMonths();
+  idx = 0; render();
+  renderHollowMode();
+  renderHistoryView();
+}
+function filtered(){
+  const modeEntries=entries.filter(entry=>(entry.mode==='dialogue'?'dialogue':'oracle')===historyView);
+  if(filterMonth==='all') return modeEntries;
+  return modeEntries.filter(e=>(e.date||'').slice(0,7)===filterMonth);
+}
+function renderMonths(){
+  const modeEntries=entries.filter(entry=>(entry.mode==='dialogue'?'dialogue':'oracle')===historyView);
+  const set = Array.from(new Set(modeEntries.map(e=>(e.date||'').slice(0,7)).filter(Boolean))).sort().reverse();
+  const box = document.getElementById('months');
+  box.innerHTML = '<button class="'+(filterMonth==='all'?'active':'')+'" onclick="setMonth(\'all\')">全部</button>' +
+    set.map(m=>'<button class="'+(filterMonth===m?'active':'')+'" onclick="setMonth(\''+m+'\')">'+m+'</button>').join('');
+}
+function setMonth(m){ filterMonth=m; idx=0; renderMonths(); render(); }
+function setHistoryView(view){historyView=['oracle','dialogue','memory'].includes(view)?view:'oracle';localStorage.setItem('cozy_hollow_history_view',historyView);filterMonth='all';renderHistoryView();renderMonths();render();if(historyView==='memory')syncBuriedMediaState();}
+function renderHistoryView(){
+  document.querySelectorAll('[data-history-view]').forEach(button=>button.classList.toggle('active',button.dataset.historyView===historyView));
+  const entryPanel=document.getElementById('history-entry-panel'),memoryPanel=document.getElementById('history-memory-panel');
+  if(entryPanel)entryPanel.hidden=historyView==='memory';
+  if(memoryPanel)memoryPanel.hidden=historyView!=='memory';
+}
+function render(){
+  const list = filtered();
+  const box = document.getElementById('day-history');
+  renderBuriedMedia();
+  if(!list.length){ box.innerHTML = '<div class="day-card"><h2>还没有记录</h2></div>'; return; }
+  const byDay = {};
+  list.forEach(e=>{
+    const day = e.date || '未标日期';
+    if(!byDay[day]) byDay[day] = [];
+    byDay[day].push(e);
+  });
+  box.innerHTML = Object.keys(byDay).sort().reverse().map(day=>{
+    const items = byDay[day].sort((a,b)=>(b.time||'').localeCompare(a.time||'')).map(e=>renderHeartEntry(e)).join('');
+    return '<section class="day-card"><h2>'+day+' · '+byDay[day].length+' 次</h2>'+items+'</section>';
+  }).join('');
+}
+function heartEntryKey(entry){return stableHeartEntryId(entry);}
+function renderHeartEntry(entry){
+  const key=heartEntryKey(entry),editing=window.editingHeartEntryId===key,mode=entry.mode==='dialogue'?'dialogue':'oracle';
+  const body=editing?'<div class="memory-editor"><label>你说的话</label><textarea id="heart-edit-transcript">'+escapeHtml(entry.transcript||'')+'</textarea><label>阿栗的'+(mode==='dialogue'?'回复':'签语')+'</label><textarea id="heart-edit-echo">'+escapeHtml(entry.echo||'')+'</textarea><div class="memory-actions"><button onclick="saveHeartEntryEdit(\''+escapeHtml(key)+'\')">保存</button><button onclick="cancelHeartEntryEdit()">取消</button></div></div>':'<div>'+escapeHtml(entry.transcript||'')+'</div><div class="echo-line">'+escapeHtml(entry.echo||'……')+'</div><div class="memory-actions"><button onclick="editHeartEntry(\''+escapeHtml(key)+'\')">编辑</button><button class="danger" onclick="deleteHeartEntry(\''+escapeHtml(key)+'\')">删除</button></div>';
+  return '<div class="memory-item"><div class="time"><span>'+(entry.time||'')+'</span><span class="memory-mode '+mode+'">'+(mode==='dialogue'?'对话':'签语')+'</span></div>'+body+'</div>';
+}
+function editHeartEntry(key){window.editingHeartEntryId=key;render();document.getElementById('heart-edit-transcript')?.focus();}
+function cancelHeartEntryEdit(){window.editingHeartEntryId='';render();}
+function persistHeartEntries(){const deleted=JSON.parse(localStorage.getItem('cozy_heart_deleted_entries')||'[]');const tombstones=deleted.slice(0,240).map(id=>({id,deleted:true}));localStorage.setItem('cozy_heart_entries',JSON.stringify(entries.slice(0,160).concat(tombstones)));window.CozyButler?.persistLocal(['cozy_heart_entries']);}
+function saveHeartEntryEdit(key){const entry=entries.find(item=>heartEntryKey(item)===key);if(!entry)return;entry.transcript=String(document.getElementById('heart-edit-transcript')?.value||'').trim().slice(0,2000);entry.echo=String(document.getElementById('heart-edit-echo')?.value||'').trim().slice(0,1200);entry.updatedAt=new Date().toISOString();persistHeartEntries();window.editingHeartEntryId='';render();showStatus((entry.mode==='dialogue'?'对话':'签语')+'已修改');}
+function deleteHeartEntry(key){if(!confirm('删除这条树洞记录吗？你说的话和阿栗的回应都会移除。'))return;entries=entries.filter(item=>heartEntryKey(item)!==key);const deleted=JSON.parse(localStorage.getItem('cozy_heart_deleted_entries')||'[]');if(!deleted.includes(key))deleted.unshift(key);localStorage.setItem('cozy_heart_deleted_entries',JSON.stringify(deleted.slice(0,240)));persistHeartEntries();window.CozyButler?.persistLocal(['cozy_heart_deleted_entries']);renderMonths();render();showStatus('这条记录已删除');}
+function renderBuriedMedia(){
+  const box = document.getElementById('buried-media');
+  if(!box) return;
+  const items = JSON.parse(localStorage.getItem('cozy_hollow_buried_media') || '[]').filter(item=>item.file||['queued_for_night','pending','ready','generating','failed','legacy_missing'].includes(String(item.status||'')));
+  const now=new Date(),cutoff=new Date(now);cutoff.setHours(4,0,0,0);if(now<cutoff)cutoff.setDate(cutoff.getDate()-1);
+  const awaitingConversation=entries.some(entry=>{const stamp=new Date(String(entry.date||'')+'T'+String(entry.time||'12:00')+':00');return Number.isFinite(stamp.getTime())&&stamp>=cutoff;});
+  const hasWaitingItem=items.some(item=>['queued_for_night','pending','generating'].includes(String(item.status||'')));
+  const waiting=awaitingConversation&&!hasWaitingItem?'<div class="nightly-waiting"><strong>等待凌晨 4 点整理</strong><span>有值得留下的内容时会自动生成影像</span></div>':'';
+  box.innerHTML = waiting+(items.length ? items.slice(0,8).map(item=>{
+    const legacyLocalImage=/assets\/generated\//.test(String(item.file||''));
+    const usableFile=item.file&&!legacyLocalImage;
+    const status=legacyLocalImage?'legacy_missing':String(item.status||'pending');
+    const error=String(item.last_error||item.error||'').slice(0,180);
+    const label=status==='legacy_missing'?'旧图片没有上传云端':status==='failed'?'生成失败':status==='generating'?'正在生成':status==='queued_for_night'||status==='pending'?'等待凌晨 4 点生成':usableFile?'已生成':'等待生成';
+    const mediaSrc=String(item.file||'').startsWith('/')?String(item.file):'../'+String(item.file||'');
+    const thumb=usableFile
+      ? '<div class="buried-thumb" style="background-image:url(\''+escapeHtml(mediaSrc)+'\')"></div>'
+      : '<div class="buried-thumb '+(status==='failed'?'status-failed':'status-waiting')+'"><span>'+label+'</span>'+(status==='failed'?'<small>'+escapeHtml(error||'图片接口没有返回可用结果。')+'</small>':'')+'</div>';
+    const editing=window.editingBuriedId===item.id;
+    const copy=editing
+      ? '<div class="buried-editor"><input id="buried-edit-title" maxlength="40" aria-label="影像标题" value="'+escapeHtml(item.title||'')+'"><textarea id="buried-edit-summary" maxlength="600" aria-label="影像文字">'+escapeHtml(item.summary||'')+'</textarea><div class="buried-actions"><button onclick="saveBuriedText(\''+escapeHtml(item.id)+'\')">保存</button><button onclick="cancelBuriedEdit()">取消</button></div></div>'
+      : '<div><div class="buried-meta"><span>'+escapeHtml(item.date||'')+'</span><span class="buried-state '+(status==='failed'?'failed':status==='queued_for_night'||status==='pending'||status==='generating'?'waiting':'')+'">'+escapeHtml(label)+'</span></div><h3>'+escapeHtml(item.title||'未命名影像')+'</h3><p>'+escapeHtml(item.summary||'这张影像还没有文字。')+'</p><div class="buried-actions">'+(usableFile?'':((status==='failed'||status==='legacy_missing')?'<button onclick="generateBuriedImage(\''+escapeHtml(item.id)+'\')">重新生成</button>':'')+'<button onclick="chooseBuriedPhoto(\''+escapeHtml(item.id)+'\')">上传照片</button>')+'<button onclick="editBuriedText(\''+escapeHtml(item.id)+'\')">编辑文字</button><button class="danger" onclick="deleteBuriedItem(\''+escapeHtml(item.id)+'\')">删除</button></div></div>';
+    return '<article class="buried-card">'+thumb+copy+'</article>';
+  }).join('') : (waiting?'':'<p style="font-size:12px;color:#8b765d;line-height:1.6">还没有需要留下的影像。</p>'));
+}
+function buriedItems(){return JSON.parse(localStorage.getItem('cozy_hollow_buried_media')||'[]');}
+function saveBuriedItems(items){localStorage.setItem('cozy_hollow_buried_media',JSON.stringify(items.slice(0,24)));window.CozyButler?.persistLocal(['cozy_hollow_buried_media']);}
+function editBuriedText(id){window.editingBuriedId=id;renderBuriedMedia();document.getElementById('buried-edit-title')?.focus();}
+function cancelBuriedEdit(){window.editingBuriedId='';renderBuriedMedia();}
+function saveBuriedText(id){
+  const title=String(document.getElementById('buried-edit-title')?.value||'').trim().slice(0,40);
+  const summary=String(document.getElementById('buried-edit-summary')?.value||'').trim().slice(0,600);
+  const items=buriedItems(),item=items.find(entry=>entry.id===id);if(!item)return;
+  item.title=title||'未命名影像';item.summary=summary;item.updatedAt=new Date().toISOString();saveBuriedItems(items);window.editingBuriedId='';renderBuriedMedia();showStatus('影像文字已保存');
+}
+function clearBuriedText(id){
+  if(!confirm('只删除这张影像里的文字吗？图片和标题会保留。'))return;
+  const items=buriedItems(),item=items.find(entry=>entry.id===id);if(!item)return;
+  item.summary='';item.transcripts=[];item.updatedAt=new Date().toISOString();saveBuriedItems(items);renderBuriedMedia();showStatus('影像文字已删除');
+}
+function deleteBuriedItem(id){
+  if(!confirm('删除这条草堆影像吗？图片和整理后的文字都会移除。'))return;
+  saveBuriedItems(buriedItems().filter(item=>item.id!==id));window.editingBuriedId='';renderBuriedMedia();showStatus('这条影像已删除');
+}
+async function syncBuriedMediaState(){
+  if(!window.CozyButler)return;
+  try{
+    const data=await CozyButler.api('/api/local-state');
+    const serverItems=data&&data.state&&data.state.values&&data.state.values.cozy_hollow_buried_media;
+    if(Array.isArray(serverItems)){
+      localStorage.setItem('cozy_hollow_buried_media',JSON.stringify(serverItems));
+      renderBuriedMedia();
+    }
+  }catch(error){}
+}
+function prevEntry(){ if(idx>0){idx--;render();} }
+function nextEntry(){ if(idx<filtered().length-1){idx++;render();} }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function renderHollowMode(){
+  document.getElementById('mode-oracle')?.classList.toggle('active',hollowMode==='oracle');
+  document.getElementById('mode-dialogue')?.classList.toggle('active',hollowMode==='dialogue');
+  document.getElementById('write-mode-oracle')?.classList.toggle('active',hollowMode==='oracle');
+  document.getElementById('write-mode-dialogue')?.classList.toggle('active',hollowMode==='dialogue');
+}
+function setHollowMode(mode){
+  hollowMode=mode==='dialogue'?'dialogue':'oracle';
+  localStorage.setItem('cozy_hollow_mode',hollowMode);
+  renderHollowMode();
+  hideTreeReply();
+  showStatus(hollowMode==='dialogue'?'已切到对话':'已切到签语');
+}
+function showTreeReply(text,mode){
+  const reply=document.getElementById('tree-reply');
+  reply.textContent=text||'';
+  reply.classList.toggle('dialogue',mode==='dialogue');
+  reply.classList.toggle('show',!!text);
+}
+function hideTreeReply(){document.getElementById('tree-reply')?.classList.remove('show');}
+function pendingOracleText(text,date){
+  let pending={date,texts:[]};
+  try{pending=JSON.parse(localStorage.getItem('cozy_hollow_oracle_pending')||'null')||pending;}catch(error){}
+  if(pending.date!==date)pending={date,texts:[]};
+  pending.texts=(pending.texts||[]).concat(text).slice(-8);
+  localStorage.setItem('cozy_hollow_oracle_pending',JSON.stringify(pending));
+  return pending.texts.join('\n');
+}
+function clearPendingOracle(){localStorage.removeItem('cozy_hollow_oracle_pending');}
+
+let heartReplyBusy=false;
+async function addEntry(){
+  if(heartReplyBusy){showStatus('阿栗还在等待上一条回复');return;}
+  const t = document.getElementById('input').value.trim();
+  if(!t) return;
+  const now = new Date();
+  const pad = n=>String(n).padStart(2,'0');
+  const e = {
+    id: 'heart_'+Date.now()+'_'+Math.random().toString(16).slice(2,8),
+    date: now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate()),
+    time: pad(now.getHours())+':'+pad(now.getMinutes()),
+    transcript: t, echo: '已收好，等你说完整。', weather: '', mode:hollowMode
+  };
+  entries.unshift(e);
+  saveLocalHeartEntry(e);
+  if(window.CozyMemory){
+    CozyMemory.add({
+      id:e.id,
+      source:'heart_hollow',
+      type:'heart_entry',
+      layer:'sealed',
+      scope:'heart_only',
+      sensitivity:'sealed',
+      weight:hasDetailedMemory(t) ? 3 : 2,
+      content:t,
+      summary:'树洞倾诉：这会影响密阁里的短期状态和长期个人线索。'
+    });
+  }
+  document.getElementById('input').value='';
+  filterMonth='all'; idx=0; renderMonths(); render();
+  showStatus('已收好');
+  const requestText=hollowMode==='oracle'?pendingOracleText(t,e.date):t;
+  if(hollowMode==='oracle'&&requestText.replace(/\s+/g,'').length<55){
+    showStatus('树洞还在听');
+    return;
+  }
+  showStatus(hollowMode==='oracle'?'正在抽取一句签语':'树洞正在回你');
+  const sendButton=document.getElementById('heart-send');heartReplyBusy=true;if(sendButton){sendButton.disabled=true;sendButton.textContent='等待回复中…';sendButton.setAttribute('aria-busy','true');}
+  try{
+    const recent=entries.filter(item=>item.date===e.date).slice(0,6).map(item=>({transcript:item.transcript,echo:item.echo,mode:item.mode||'oracle'}));
+    const data = window.CozyButler ? await CozyButler.api('/api/room',{room:'heart_hollow',message:requestText,context:{date:e.date,time:e.time,mode:hollowMode,recent,current_text:t,memory_event_id:e.id,recent_memory_ids:hollowRecentMemoryIds(),recent_reply_styles:hollowRecentReplyStyles()}}) : null;
+    if(data && data.result && data.result.reply){
+      e.echo=data.result.reply;
+      rememberHollowResponse(data);
+      recordOrchardGrowth(e,data.result.growth_signal);
+      if(hollowMode==='oracle')clearPendingOracle();
+      const local=JSON.parse(localStorage.getItem('cozy_heart_entries')||'[]');
+      const match=local.find(item=>item.date===e.date&&item.time===e.time&&item.transcript===e.transcript);if(match)match.echo=e.echo;
+      localStorage.setItem('cozy_heart_entries',JSON.stringify(local));window.CozyButler?.persistLocal(['cozy_heart_entries']);render();showTreeReply(e.echo,hollowMode);
+    }
+  }catch(error){
+    e.echo=hollowMode==='oracle'?'这会儿阿栗没连上模型，话已经封存好；签语等连接恢复后再抽。':'这会儿阿栗没连上模型，话已经封存好。我先不拿套话敷衍你，连接恢复后再接着聊。';
+    const local=JSON.parse(localStorage.getItem('cozy_heart_entries')||'[]');const match=local.find(item=>item.id===e.id);if(match)match.echo=e.echo;localStorage.setItem('cozy_heart_entries',JSON.stringify(local));window.CozyButler?.persistLocal(['cozy_heart_entries']);
+    recordOrchardGrowth(e,null);render();showTreeReply(e.echo,hollowMode);showStatus('阿栗暂时没连上模型，内容已经封存');
+  }finally{heartReplyBusy=false;if(sendButton){sendButton.disabled=false;sendButton.textContent='埋进树洞';sendButton.removeAttribute('aria-busy');}}
+}
+
+function saveLocalHeartEntry(entry){
+  const list = JSON.parse(localStorage.getItem('cozy_heart_entries') || '[]');
+  list.unshift(entry);
+  localStorage.setItem('cozy_heart_entries', JSON.stringify(list.slice(0,160)));
+  window.CozyButler?.persistLocal(['cozy_heart_entries']);
+}
+function memorySpecificityScore(text){
+  const t=String(text||'').replace(/\s+/g,'').trim();
+  if(!t||t.length<38)return 0;
+  if(/^(在听吗|好难过|好烦|不知道|怎么办|呜呜|唉|啊|嗯)+[呀啊呢吧嘛]*$/i.test(t))return 0;
+  let score=t.length>=85?3:t.length>=58?2:1;
+  if(/昨天|今天|早上|中午|晚上|周[一二三四五六日天]|\d{1,2}[点月日号]|公司|项目|会议|旅行|朋友|同事|家里|去了|收到|说了|看到|发生|决定|因为|后来/.test(t))score+=2;
+  if(/他说|她说|我说|当时|地点|名字|具体|结果|最后/.test(t))score+=1;
+  return score;
+}
+function hasDetailedMemory(text){return memorySpecificityScore(text)>=4;}
+function privateSafeGrowthFallback(text){
+  const value=String(text||'');
+  if(/工作|公司|项目|会议|同事|产品|面试|职业/.test(value))return{title:'重新整理工作的方向',hint:'这段经历正在让取舍、边界或下一步变得更清楚。'};
+  if(/朋友|关系|家人|家里|他说|她说|相处/.test(value))return{title:'在关系里辨认边界',hint:'这段经历正在形成一种更清楚的相处判断。'};
+  if(/学习|课程|读书|工具|模型|AI|代码|知识/.test(value))return{title:'把新知变成自己的判断',hint:'新的理解正在和已有经验连接起来。'};
+  if(/决定|选择|以后|方向|计划|想要/.test(value))return{title:'为下一步辨认方向',hint:'这段经历正在帮助一个选择慢慢显形。'};
+  return{title:'消化一段真实经历',hint:'这段经历正在沉淀成更清楚的感受与判断。'};
+}
+function recordOrchardGrowth(entry,signal){
+  if(!hasDetailedMemory(entry.transcript))return;
+  const provided=signal&&typeof signal==='object'?signal:null;
+  if(provided&&provided.should_grow===false)return;
+  const fallback=privateSafeGrowthFallback(entry.transcript),title=String(provided?.title||fallback.title).replace(/[\r\n]+/g,' ').trim().slice(0,28),hint=String(provided?.hint||fallback.hint).replace(/[\r\n]+/g,' ').trim().slice(0,90);
+  if(!title)return;
+  const key='cozy_orchard_growth_events',events=JSON.parse(localStorage.getItem(key)||'[]'),id='growth_'+entry.id;
+  if(events.some(item=>item.id===id))return;
+  events.unshift({id,source:'heart_hollow',sourceDate:entry.date,title,hint,nourishment:Math.max(1,Math.min(3,Number(provided?.nourishment)||2)),createdAt:new Date().toISOString(),consumed:false,privacy:'distilled_only'});
+  localStorage.setItem(key,JSON.stringify(events.slice(0,240)));
+  window.CozyButler?.persistLocal([key]);
+}
+function summarizeMemoryTitle(text){
+  const clean=String(text||'').replace(/[\n\r]+/g,' ').replace(/^(今天|昨天|我想说|就是|然后|其实)[，,、\s]*/,'').trim();
+  const first=clean.split(/[。！？!?；;]/)[0].slice(0,22);
+  return first.length>=6?first:'这一天被认真记住的片刻';
+}
+let buriedUploadId='';
+function chooseBuriedPhoto(id){buriedUploadId=id;const input=document.getElementById('buried-upload');input.value='';input.click();}
+function hollowFileData(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('照片读取失败'));reader.readAsDataURL(file);});}
+async function uploadBuriedPhoto(file){
+  if(!file||!buriedUploadId)return;showStatus('正在埋下照片');
+  try{
+    const current=JSON.parse(localStorage.getItem('cozy_hollow_buried_media')||'[]');
+    const pending=current.find(item=>item.id===buriedUploadId)||{};
+    const data=await CozyButler.api('/api/media/upload',{kind:'tree_hollow',replace_id:buriedUploadId,name:file.name,title:pending.title||'一张记忆照',note:pending.summary||'',data_url:await hollowFileData(file)},120000);
+    const serverItems=(data.local_state&&data.local_state.values&&data.local_state.values.cozy_hollow_buried_media)||[];
+    const merged=serverItems.filter(item=>item.id!==buriedUploadId);
+    localStorage.setItem('cozy_hollow_buried_media',JSON.stringify(merged));
+    await CozyButler.api('/api/local-state',{values:{cozy_hollow_buried_media:merged}},12000);
+    renderBuriedMedia();showStatus('照片埋好了');
+  }catch(error){showStatus('没有埋好：'+error.message);}
+}
+async function generateBuriedImage(id){
+  const items=buriedItems(),item=items.find(entry=>entry.id===id);if(!item||item.status==='generating')return;
+  item.status='generating';delete item.error;saveBuriedItems(items);renderBuriedMedia();showStatus('正在生成草堆影像');
+  const prompt='二维绘本插画，安静温暖的树洞回忆场景，不出现文字，不画清晰真人面孔，保留自然光影和生活细节。回忆主题：'+String(item.summary||item.title||'一段被认真记住的片刻').slice(0,500);
+  try{
+    const data=await CozyButler.api('/api/media/generate',{kind:'image',provider:'seedream',target:'tree_hollow',replace_id:id,title:item.title||'一张记忆影像',note:item.summary||'',prompt},120000);
+    const serverItems=data?.local_state?.values?.cozy_hollow_buried_media;
+    if(Array.isArray(serverItems))localStorage.setItem('cozy_hollow_buried_media',JSON.stringify(serverItems));
+    await syncBuriedMediaState();renderBuriedMedia();showStatus('影像已经放进草堆');
+  }catch(error){
+    const current=buriedItems(),failed=current.find(entry=>entry.id===id);if(failed){failed.status='failed';failed.error=String(error.message||error).slice(0,180);saveBuriedItems(current);}renderBuriedMedia();showStatus('生成失败：'+String(error.message||error).slice(0,80));
+  }
+}
+
+let voiceController = null;
+function setTreeVoiceState(state,message){
+  const button=document.querySelector('.talk-btn');
+  const status=document.getElementById('voice-status');
+  const active=state==='starting'||state==='listening'||state==='stopping';
+  button.classList.toggle('starting',state==='starting');
+  button.classList.toggle('listening',state==='listening');
+  button.classList.toggle('stopping',state==='stopping');
+  button.setAttribute('aria-pressed',String(active));
+  button.setAttribute('aria-label',active?'停止倾听':'语音倾诉');
+  button.title=active?'停止倾听':'语音倾诉';
+  status.textContent=message||'';
+  status.classList.toggle('persistent',active);
+  status.classList.toggle('show',!!message);
+  clearTimeout(setTreeVoiceState.timer);
+  if(!active&&message)setTreeVoiceState.timer=setTimeout(()=>status.classList.remove('show'),3000);
+  if(state==='idle')document.getElementById('live-transcript')?.classList.remove('show');
+  if(state==='starting')hideTreeReply();
+}
+function startVoice(){
+  if(!window.CozyButler?.createDictation){showStatus('语音组件正在准备，请稍后再试');return;}
+  if(!voiceController)voiceController=CozyButler.createDictation({
+    input:document.getElementById('input'),
+    onTranscript:(spoken,full)=>{const live=document.getElementById('live-transcript');live.textContent=full;live.classList.toggle('show',!!full);},
+    onState:(state,message)=>{setTreeVoiceState(state,message);if(state==='idle'&&document.getElementById('input').value.trim())setTimeout(addEntry,120);}
+  });
+  voiceController.toggle();
+}
+function showStatus(text){
+  const status = document.getElementById('voice-status');
+  status.textContent = text;
+  status.classList.add('show');
+  clearTimeout(showStatus.timer);
+  showStatus.timer = setTimeout(()=>status.classList.remove('show'),1800);
+}
+let grassCount = 0;
+let grassTimer = 0;
+function tapGrass(){
+  grassCount += 1;
+  clearTimeout(grassTimer);
+  if(grassCount >= 5){
+    document.getElementById('hollow-stage').classList.add('history-unlocked');
+    syncBuriedMediaState();
+    showStatus('历史已打开');
+    grassCount = 0;
+    return;
+  }
+  grassTimer = setTimeout(()=>{ grassCount = 0; }, 1600);
+}
+function openHistory(){document.getElementById('hollow-stage').classList.add('history-unlocked');renderHistoryView();renderMonths();render();if(historyView==='memory')syncBuriedMediaState();}
+function closeHistory(){document.getElementById('hollow-stage').classList.remove('history-unlocked');grassCount=0;}
+window.addEventListener('cozy:state-synced',load);
+const buriedSyncTimer=setInterval(syncBuriedMediaState,30000);
+window.addEventListener('beforeunload',()=>{clearInterval(buriedSyncTimer);if(voiceController?.isActive())voiceController.stop();});
+load();
+</script>
+</body>
+</html>

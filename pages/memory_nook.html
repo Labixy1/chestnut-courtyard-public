@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#75604a" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="阿栗" />
+<link rel="manifest" href="../manifest.webmanifest" />
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/app/icon-180.png" />
+<title>我的记忆档案 · 密阁</title>
+<script src="../core/runtime-config.js"></script>
+<script src="../core/runtime.js"></script>
+<script src="../core/data.js"></script>
+<script src="../core/memory.js"></script>
+<script src="../logger.js"></script>
+<script src="../core/pwa.js" defer></script>
+<script src="../core/butler_widget.js" defer></script>
+<script src="../core/mobile.js" defer></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  button,input,textarea,select{font-family:inherit;letter-spacing:0}
+  body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",serif;overflow:hidden;
+     color:#f7ead0;background:#17120e}
+  .room{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;
+     background:
+       radial-gradient(circle at 50% 34%,rgba(196,139,72,.24),rgba(23,18,14,0) 36%),
+       linear-gradient(135deg,#2c1c14,#15100d 62%,#0f0c0a)}
+  .back{position:fixed;left:18px;top:16px;z-index:3;color:#f7ead0;text-decoration:none;font-size:14px;
+     background:rgba(255,246,214,.12);border:1px solid rgba(255,246,214,.22);padding:7px 13px;
+     border-radius:999px;backdrop-filter:blur(6px)}
+  .panel{width:min(1040px,88vw);max-height:86vh;overflow:auto;border-radius:20px;padding:30px 32px;
+     background:rgba(52,35,24,.72);border:1px solid rgba(255,226,176,.18);
+     box-shadow:0 30px 80px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.04);
+     backdrop-filter:blur(10px)}
+  h1{font-size:24px;margin-bottom:8px;color:#fff3d7}
+  .lead{font-size:14px;line-height:1.8;color:rgba(247,234,208,.76);margin-bottom:24px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .card{border-radius:18px;background:rgba(255,246,222,.08);border:1px solid rgba(255,226,176,.14);
+     padding:16px 18px;min-height:128px}
+  .card h2{font-size:15px;margin-bottom:10px;color:#ffe8ba}
+  .card p{font-size:13px;line-height:1.7;color:rgba(247,234,208,.76)}
+  .memory-section{margin-top:18px}
+  .memory-section h2{font-size:16px;color:#ffe8ba;margin-bottom:10px}
+  .memory-list{display:grid;gap:10px}
+  .memory-row{border-radius:16px;background:rgba(255,246,222,.07);border:1px solid rgba(255,226,176,.12);
+     padding:12px 14px}
+  .memory-row h3{font-size:13px;color:#fff2d2;margin-bottom:5px}
+  .memory-row p{font-size:12px;line-height:1.65;color:rgba(247,234,208,.72)}
+  .memory-meta{font-size:11px;color:rgba(247,234,208,.46);margin-top:5px}
+  .source-pills{display:flex;gap:8px;flex-wrap:wrap}
+  .source-pills span{font-size:12px;border-radius:999px;padding:6px 10px;background:rgba(255,226,176,.12);
+     color:rgba(255,236,196,.78)}
+  .skill-catalog{display:grid;gap:15px}.skill-summary{font-size:11px;color:rgba(247,234,208,.52);margin:-3px 0 3px}.skill-category h3{font-size:11px;color:#d9b978;margin:0 0 8px}.skill-module-grid,.skill-tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.skill-module,.skill-tool-card{min-width:0;padding:10px 11px;border-radius:11px;background:rgba(255,246,222,.06);border:1px solid rgba(255,226,176,.1)}.skill-module-head,.skill-tool-head{display:flex;align-items:center;gap:7px}.skill-module h4,.skill-tool-card h4{min-width:0;flex:1;font-size:11px;color:#fff0d0;overflow-wrap:anywhere}.skill-module-badge,.skill-tool-type{flex:0 0 auto;font-size:8px;padding:2px 5px;border-radius:999px;background:rgba(151,183,197,.12);color:#c4d9df}.skill-module p,.skill-tool-card p{margin-top:5px;font-size:9px;line-height:1.55;color:rgba(247,234,208,.5)}.skill-tools-details{border-top:1px solid rgba(255,226,176,.08);padding-top:10px}.skill-tools-details summary{font-size:10px;color:rgba(247,234,208,.58);cursor:pointer;list-style:none}.skill-tools-details summary::-webkit-details-marker{display:none}.skill-tools-details summary:after{content:" +";color:#d9b978}.skill-tools-details[open] summary:after{content:" −"}.skill-tool-grid{margin-top:10px}.skill-tool-card{min-height:82px}.skill-tool-type.write{background:rgba(215,177,109,.13);color:#e8c98f}.skill-tool-type.read{background:rgba(151,183,197,.12);color:#c4d9df}.skill-tool-type.execute{background:rgba(154,181,125,.12);color:#c9dcae}
+  .seal{margin-top:20px;font-size:12px;color:rgba(247,234,208,.52)}
+  .permission-room{display:flex;align-items:center;gap:18px;margin:0 0 22px;padding:17px 18px;border-radius:16px;background:rgba(219,168,89,.12);border:1px solid rgba(255,218,155,.2)}
+  .permission-copy{min-width:0;flex:1}.permission-copy h2{font-size:15px;color:#ffe8ba;margin-bottom:5px}.permission-copy p{font-size:12px;line-height:1.6;color:rgba(247,234,208,.68)}
+  .permission-state{font-size:11px;color:#d9bb83;margin-top:5px}.permission-switch{position:relative;display:inline-block;width:48px;height:27px;flex:0 0 auto}.permission-switch input{position:absolute;opacity:0}.permission-slider{position:absolute;inset:0;border-radius:999px;background:#5b4c40;border:1px solid rgba(255,235,198,.2);cursor:pointer;transition:.2s}.permission-slider:before{content:"";position:absolute;width:21px;height:21px;left:2px;top:2px;border-radius:50%;background:#f2e4c8;transition:.2s}.permission-switch input:checked+.permission-slider{background:#b18542}.permission-switch input:checked+.permission-slider:before{transform:translateX(21px)}
+  .memory-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.memory-toolbar h2{margin:0}.memory-refresh{border:1px solid rgba(255,226,176,.18);background:rgba(255,246,222,.08);color:#ffe8ba;border-radius:999px;padding:6px 11px;cursor:pointer;font-size:11px}
+  .memory-actions{display:flex;gap:6px;margin-top:8px}.memory-actions button{border:1px solid rgba(255,226,176,.15);background:rgba(255,246,222,.08);color:rgba(247,234,208,.72);border-radius:999px;padding:4px 8px;font-size:10px;cursor:pointer}.memory-actions button.danger{color:#edb8a4}
+  .preference-row{border-left:2px solid rgba(215,177,109,.5)}.preference-row.candidate{border-left-color:rgba(151,183,197,.55)}
+  .preference-status{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:999px;background:rgba(215,177,109,.14);color:#e8c98f;font-size:9px;vertical-align:1px}.preference-status.candidate{background:rgba(151,183,197,.13);color:#b9d2dc}
+  .task-row{display:grid;grid-template-columns:1fr auto;gap:8px}.task-status{font-size:10px;color:#d9bb83}.empty{font-size:12px;color:rgba(247,234,208,.55)}
+  .archive-summary{display:flex;align-items:center;gap:22px;margin:0 0 20px;padding:12px 0 16px;border-bottom:1px solid rgba(255,226,176,.12)}
+  .archive-count strong{display:block;font-size:19px;color:#fff0ca}.archive-count span{display:block;margin-top:2px;font-size:10px;color:rgba(247,234,208,.48)}
+  .profile-document{padding:2px 2px 18px;max-width:820px}.profile-section{margin-bottom:20px}.profile-section h2{font-size:12px;color:#d9b978;margin-bottom:7px}.profile-section p{font-size:14px;line-height:1.9;color:rgba(255,241,213,.82)}.profile-meta{padding-top:10px;border-top:1px solid rgba(255,226,176,.09);font-size:10px;color:rgba(247,234,208,.38)}
+  .archive-overview{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.85fr);gap:24px;align-items:start}.archive-part{min-width:0;padding:0}.archive-part-title{font-size:12px;color:#d9b978;margin-bottom:11px}.inner-profile{padding:14px 16px;border-radius:13px;background:rgba(151,183,197,.055);border:1px solid rgba(151,183,197,.12)}.inner-profile .profile-section h2{color:#bdd5dd}.evidence-heading{display:flex;align-items:center;justify-content:space-between;margin:4px 0 10px;font-size:12px;color:#d9b978}.evidence-heading span{font-size:10px;color:rgba(247,234,208,.42)}
+  .distill-control{display:flex;align-items:center;gap:14px;margin:2px 0 12px;padding:13px 14px;border-radius:14px;background:rgba(255,246,222,.055);border:1px solid rgba(255,226,176,.1)}.distill-copy{min-width:0;flex:1}.distill-copy h2{font-size:13px;color:#ffe8ba;margin-bottom:4px}.distill-copy p{font-size:10px;line-height:1.6;color:rgba(247,234,208,.52)}.distill-button{border:1px solid rgba(255,226,176,.16);background:rgba(211,170,96,.13);color:#f1d7a4;border-radius:8px;padding:7px 11px;font-size:10px;cursor:pointer;white-space:nowrap}.distill-button:disabled{cursor:default;opacity:.42}
+  .workspace-intro{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 0 10px}.workspace-intro h2{font-size:16px;color:#ffe8ba}.workspace-intro p{font-size:10px;color:rgba(247,234,208,.48)}
+  .status-tabs{display:inline-flex;gap:3px;padding:3px;border-radius:9px;background:rgba(18,13,10,.28);border:1px solid rgba(255,226,176,.09)}.status-tab{border:0;border-radius:6px;background:transparent;color:rgba(247,234,208,.54);padding:6px 11px;font-size:10px;cursor:pointer}.status-tab.active{background:rgba(214,171,94,.17);color:#ffe9bd}
+  .memory-workspace{display:grid;grid-template-columns:210px minmax(0,1fr);gap:14px;align-items:start}
+  .category-panel{position:sticky;top:0;border-radius:14px;background:rgba(18,13,10,.24);border:1px solid rgba(255,226,176,.1);padding:10px;max-height:62vh;overflow:auto}
+  .category-title{display:flex;align-items:center;justify-content:space-between;padding:3px 4px 9px;font-size:12px;color:#e8cc98}
+  .category-add{width:25px;height:25px;border:0;border-radius:7px;background:rgba(255,235,198,.1);color:#f5ddb0;cursor:pointer;font-size:17px;line-height:25px}
+  .category-list{display:grid;gap:4px}.category-chip{width:100%;display:flex;align-items:center;gap:8px;border:0;border-radius:9px;background:transparent;color:rgba(247,234,208,.66);padding:8px 9px;text-align:left;cursor:pointer;font-size:11px}
+  .category-chip:hover{background:rgba(255,246,222,.06)}.category-chip.active{background:rgba(214,171,94,.17);color:#ffe9bd}.category-chip b{margin-left:auto;font-size:10px;font-weight:500;opacity:.62}
+  .category-tools{margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,226,176,.09);display:grid;gap:6px}.category-tools button{border:0;background:transparent;color:rgba(247,234,208,.5);font-size:10px;text-align:left;cursor:pointer;padding:3px 5px}.category-tools button:hover{color:#f7dfb3}
+  .cards-panel{min-width:0}.cards-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px}.cards-head h2{margin:0;font-size:16px}.cards-head span{font-size:10px;color:rgba(247,234,208,.48)}
+  .card-groups{display:grid;gap:18px}.card-group-title{display:flex;align-items:center;gap:7px;margin-bottom:8px;font-size:12px;color:#e8cc98}.card-group-title span{font-size:9px;padding:2px 6px;border-radius:999px;background:rgba(255,231,188,.1);color:rgba(247,234,208,.58)}
+  .memory-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.memory-card{min-width:0;border-radius:13px;background:rgba(255,246,222,.065);border:1px solid rgba(255,226,176,.11);padding:12px 13px}.memory-card.candidate{border-style:dashed;background:rgba(151,183,197,.055)}
+  .memory-card-top{display:flex;align-items:center;gap:7px}.memory-kind{font-size:9px;color:#d9bb83;background:rgba(217,187,131,.1);padding:2px 6px;border-radius:999px}.memory-card h3{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;color:#fff0d0}.memory-card p{font-size:11px;line-height:1.65;color:rgba(247,234,208,.67);margin-top:7px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.memory-evidence{font-size:9px;color:rgba(247,234,208,.4);margin-top:7px}.memory-card .memory-actions{flex-wrap:wrap}.memory-card select{max-width:130px;border:1px solid rgba(255,226,176,.13);background:#35261c;color:#dfc79b;border-radius:7px;padding:3px 5px;font-size:9px}
+  .card-more{position:relative;margin-left:auto;flex:0 0 auto}.card-more summary{list-style:none;width:24px;height:24px;display:grid;place-items:center;border-radius:6px;color:rgba(247,234,208,.46);cursor:pointer;font-size:15px}.card-more summary::-webkit-details-marker{display:none}.card-more summary:hover,.card-more[open] summary{background:rgba(255,246,222,.08);color:#f2d8a6}.card-more-menu{position:absolute;right:0;top:28px;z-index:6;width:152px;padding:8px;border-radius:9px;background:#302219;border:1px solid rgba(255,226,176,.16);box-shadow:0 12px 30px rgba(0,0,0,.34)}.card-more-menu label{display:block;font-size:9px;color:rgba(247,234,208,.48);margin-bottom:6px}.card-more-menu select{display:block;width:100%;max-width:none;margin-top:4px}.card-more-menu button{display:block;width:100%;border:0;background:transparent;color:rgba(247,234,208,.66);padding:6px 5px;text-align:left;font-size:10px;cursor:pointer}.card-more-menu button:hover{background:rgba(255,246,222,.06)}.card-more-menu button.danger{color:#dca997}.remember-button{margin-top:8px;border:1px solid rgba(205,173,111,.22);background:rgba(205,173,111,.12);color:#efd8a9;border-radius:7px;padding:5px 9px;font-size:10px;cursor:pointer}
+  .suggestion-row{display:flex;align-items:center;gap:8px;border-radius:11px;background:rgba(151,183,197,.06);padding:9px 10px;margin-bottom:7px;font-size:10px;color:#bdd1d8}.suggestion-row b{color:#d7e6ea}.suggestion-row span{margin-left:auto;color:rgba(189,209,216,.55)}
+  .quiet-details{margin-top:14px;border-top:1px solid rgba(255,226,176,.1)}.quiet-details summary{list-style:none;display:flex;align-items:center;gap:8px;padding:13px 2px;color:rgba(247,234,208,.58);font-size:11px;cursor:pointer}.quiet-details summary::-webkit-details-marker{display:none}.quiet-details summary span{margin-left:auto;color:rgba(247,234,208,.38)}.quiet-details summary:after{content:"+";font-size:15px;color:rgba(247,234,208,.4)}.quiet-details[open] summary:after{content:"−"}.details-content{padding:0 2px 10px}.details-content .memory-section:first-child{margin-top:4px}.details-content .permission-room{margin:2px 0 8px}
+  /* Light archive theme shared with the noticeboard reading surface. */
+  body{color:#3b443d;background:#eef1ec}
+  .room{background:linear-gradient(180deg,#f2f4f0,#e8ede7)}
+  .back{color:#526257;background:rgba(255,255,255,.8);border-color:#d9dfd8}
+  .panel{background:rgba(249,250,247,.97);border-color:#dce2db;box-shadow:0 24px 70px rgba(48,62,51,.16);backdrop-filter:blur(12px)}
+  h1,.panel h1{color:#343c36}.lead{color:#6c756e}.archive-part-title,.profile-section h2,.evidence-heading,.workspace-intro h2,.cards-head h2,.memory-section h2,.card h2,.memory-toolbar h2{color:#506455}
+  .profile-section p,.card p,.memory-row p,.permission-copy p,.distill-copy p,.skill-module p,.skill-tool-card p,.memory-card p{color:#616d64}
+  .profile-meta,.memory-meta,.archive-count span,.cards-head span,.skill-summary,.workspace-intro p,.memory-evidence,.seal{color:#8a948c}
+  .archive-summary,.quiet-details{border-color:#dce2db}.archive-count strong,.memory-row h3,.memory-card h3,.skill-module h4,.skill-tool-card h4{color:#3f5043}
+  .inner-profile,.card,.memory-row,.memory-card,.skill-module,.skill-tool-card,.distill-control{background:#fff;border-color:#dfe5de}
+  .inner-profile .profile-section h2{color:#607969}.source-pills span,.memory-kind,.preference-status{background:#e9f0e8;color:#607466}
+  .permission-room{background:#edf3eb;border-color:#d5e0d4}.permission-copy h2,.distill-copy h2{color:#49604f}.permission-state,.task-status{color:#6b7f70}
+  .permission-slider{background:#d8dfd8;border-color:#cbd5cb}.permission-slider:before{background:#fff}.permission-switch input:checked+.permission-slider{background:#78977a}
+  .memory-refresh,.memory-actions button,.distill-button,.remember-button{background:#edf3eb;border-color:#d4ded3;color:#526b58}.memory-actions button.danger,.card-more-menu button.danger{color:#a05f57}
+  .skill-category h3,.archive-part-title,.category-title,.card-group-title{color:#657b69}.skill-module-badge,.skill-tool-type.read{background:#e7eff0;color:#607b80}.skill-tool-type.write{background:#f1eadc;color:#806d49}.skill-tool-type.execute{background:#e6efe2;color:#5f795e}.skill-tools-details{border-color:#dfe5de}.skill-tools-details summary{color:#718078}
+  .status-tabs{background:#e9ede8;border-color:#dce2db}.status-tab{color:#68736b}.status-tab.active{background:#fff;color:#405747;box-shadow:0 1px 4px rgba(47,66,51,.1)}
+  .category-panel{background:#f0f4ef;border-color:#dce4db}.category-add{background:#fff;color:#58705d}.category-chip{color:#657269}.category-chip:hover{background:#e7eee6}.category-chip.active{background:#dce9da;color:#405c46}.category-tools{border-color:#dbe3da}.category-tools button{color:#758078}.category-tools button:hover{color:#45604b}
+  .memory-card.candidate,.suggestion-row{background:#f3f7f4;border-color:#dbe5df}.suggestion-row,.suggestion-row b{color:#61776b}.suggestion-row span{color:#8a9990}
+  .memory-card select{background:#fff;color:#52635a;border-color:#d9e0d9}.card-more summary{color:#79857d}.card-more summary:hover,.card-more[open] summary{background:#edf1ec;color:#4f6555}.card-more-menu{background:#fff;border-color:#d9e0d9;box-shadow:0 12px 30px rgba(43,58,46,.16)}.card-more-menu label{color:#7a867e}.card-more-menu button{color:#5f6d64}.card-more-menu button:hover{background:#edf2ec}
+  .quiet-details summary{color:#59685e}.quiet-details summary span,.quiet-details summary:after{color:#89948c}.empty{color:#89948c}
+  @media(max-width:820px){.archive-overview{grid-template-columns:1fr}.memory-workspace{grid-template-columns:1fr}.category-panel{position:static;max-height:none}.category-list{display:flex;overflow:auto}.category-chip{min-width:max-content;width:auto}.memory-card-grid,.skill-module-grid,.skill-tool-grid{grid-template-columns:1fr}.workspace-intro{align-items:start;flex-direction:column;gap:3px}}
+  @media(max-width:700px){body{padding-bottom:var(--mobile-nav-h,62px);align-items:flex-start}.back{display:none}.room{height:calc(100dvh - var(--mobile-nav-h,62px));width:100vw;display:block}.panel{width:100%;max-height:none;height:100%;border-radius:0;padding:24px 15px 40px}.panel>h1{font-size:21px}.lead{font-size:12px;margin-bottom:18px}.archive-summary{gap:14px;overflow-x:auto}.profile-section p{font-size:13px;line-height:1.8}.inner-profile{padding:12px}.permission-room,.distill-control{align-items:flex-start;flex-wrap:wrap}.grid{grid-template-columns:1fr}.quiet-details summary{min-height:46px}.category-panel{margin:0 -2px;padding:8px}.category-list{padding-bottom:3px}.cards-head{align-items:flex-start}.card-more-menu{position:fixed;left:15px;right:15px;top:auto;bottom:calc(var(--mobile-nav-h,62px) + 10px);width:auto}.status-tabs{max-width:100%;overflow-x:auto}.memory-actions button{min-height:30px}}
+  .archive-header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid #dce2db}
+  .archive-header h1{margin:0 0 5px;font-size:27px}.archive-header p{color:#778079;font-size:12px}
+  .archive-tabs{display:flex;gap:4px;padding:4px;background:#e8ede7;border-radius:9px;flex:0 0 auto}
+  .archive-tab{border:0;background:transparent;color:#68736b;border-radius:6px;padding:8px 16px;font-size:12px;cursor:pointer}
+  .archive-tab.active{background:#fff;color:#365440;box-shadow:0 1px 5px rgba(47,66,51,.12)}
+  .archive-view{display:none;max-width:780px;margin:0 auto;padding:32px 4px 24px}.archive-view.active{display:block}
+  .archive-view-title{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:25px}
+  .archive-view-title h2{font-size:20px;color:#34453a}.archive-view-title span{font-size:10px;color:#929b94}
+  .archive-report{border-left:2px solid #b8c7ba;padding-left:22px}.archive-report.emotional{border-left-color:#d2b7ad}
+  .archive-report .profile-section{margin:0 0 27px}.archive-report .profile-section:last-child{margin-bottom:10px}
+  .archive-report .profile-section h3{font-size:13px;color:#607466;margin-bottom:8px}.archive-report.emotional .profile-section h3{color:#8a675e}
+  .archive-report .profile-section p{font-size:14px;line-height:1.95;color:#4f5b52;white-space:pre-wrap}
+  .archive-moments{margin-top:30px;padding-top:24px;border-top:1px solid #e0e5df}.archive-moments h3{font-size:13px;color:#8a675e;margin-bottom:13px}
+  .moment{margin:0 0 12px;padding:12px 14px;background:#f8f5f3;border-left:2px solid #d7bdb4;color:#685853;font-size:13px;line-height:1.75}.moment time{display:block;margin-top:5px;color:#9a8c87;font-size:9px}
+  .archive-empty{color:#89948c;font-size:13px;line-height:1.8}
+  .archive-evidence{margin-top:30px;padding-top:22px;border-top:1px solid #e0e5df}.archive-evidence-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px}.archive-evidence-head h3{font-size:13px;color:#607466}.archive-evidence-head span{font-size:10px;color:#929b94}.evidence-list{border-top:1px solid #e7ebe6}.evidence-group{display:grid;grid-template-columns:104px minmax(0,1fr);gap:16px;padding:15px 0;border-bottom:1px solid #e7ebe6}.evidence-origin{font-size:11px;line-height:1.6;color:#65766a}.evidence-origin span{display:block;margin-top:2px;font-size:9px;color:#9aa39c}.evidence-excerpts{list-style:none;display:grid;gap:7px}.evidence-excerpts li{font-size:12px;line-height:1.7;color:#536058;overflow-wrap:anywhere}.evidence-excerpts time{margin-right:8px;color:#99a29b;font-size:9px}.emotional-evidence .archive-evidence-head h3{color:#8a675e}.emotional-evidence .evidence-origin{color:#8a675e}
+  .archive-tools{max-width:780px;margin:0 auto}
+  @media(max-width:700px){.archive-header{align-items:flex-start;flex-direction:column;padding-bottom:15px}.archive-header h1{font-size:22px}.archive-tabs{width:100%}.archive-tab{flex:1;padding:9px 8px}.archive-view{padding:25px 2px 18px}.archive-view-title{margin-bottom:21px}.archive-report{padding-left:15px}.archive-report .profile-section p{font-size:13px;line-height:1.85}.archive-tools{max-width:none}.evidence-group{grid-template-columns:76px minmax(0,1fr);gap:10px}.evidence-excerpts li{font-size:12px}}
+</style>
+</head>
+<body>
+<main class="room">
+  <a class="back" href="bedroom.html">← 回卧室</a>
+  <section class="panel">
+    <header class="archive-header"><div><h1>密阁</h1><p>阿栗为你整理的长期档案</p></div><nav class="archive-tabs" aria-label="档案切换"><button class="archive-tab active" data-archive="growth" onclick="showArchive('growth')">成长档案</button><button class="archive-tab" data-archive="emotional" onclick="showArchive('emotional')">情感档案</button></nav></header>
+    <section class="archive-view active" id="growth-archive"><div class="archive-view-title"><h2>成长档案</h2><span id="profile-meta"></span></div><article class="archive-report" id="profile-sections"></article><section class="archive-evidence"><div class="archive-evidence-head"><h3>成长依据</h3><span id="growth-evidence-count"></span></div><div class="evidence-list" id="growth-evidence"></div></section></section>
+    <section class="archive-view" id="emotional-archive"><div class="archive-view-title"><h2>情感档案</h2><span id="inner-profile-meta"></span></div><article class="archive-report emotional" id="inner-profile-sections"></article><section class="archive-moments" id="emotional-moments-wrap"><h3>触动时刻</h3><div id="emotional-moments"></div></section><section class="archive-evidence emotional-evidence"><div class="archive-evidence-head"><h3>情感依据</h3><span id="emotional-evidence-count"></span></div><div class="evidence-list" id="emotional-evidence"></div></section></section>
+  </section>
+</main>
+<script>
+function esc(str){
+  return String(str || '').replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function sourceName(source){
+  return ({
+    heart_hollow:'树洞', orchard:'成长田', blackboard:'黑板',
+    noticeboard:'公告板', travel:'出发旅行', photo_wall:'照片墙', butler:'阿栗任务',
+    private_wing:'密阁', memory_nook:'密阁'
+  })[source] || source || '未知';
+}
+function readableMemory(value){
+  let current=String(value||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
+  for(let index=0;index<2&&/^[\[{]/.test(current);index+=1){
+    try{const parsed=JSON.parse(current);const pick=parsed.summary||parsed.score_summary||parsed.content||parsed.text||parsed.statement||parsed.reflection||parsed.reply||parsed.title;if(pick)current=String(pick).trim();else if(Array.isArray(parsed))current=parsed.map(item=>typeof item==='string'?item:(item.summary||item.content||item.text||'')).filter(Boolean).join('；');else return '';}catch(_error){return '';}
+  }
+  return current.replace(/^旅行感悟[：:]\s*/, '').replace(/\s+/g,' ').trim();
+}
+function evidenceDate(item){return String(item.date||item.updated_at||item.created_at||item.time||'').slice(0,10);}
+function usefulEvidence(item){const text=readableMemory(item.statement||item.summary||item.content||item.text);return text.length>=8&&!/希望阿栗帮忙做一件事|交给阿栗|只回复|测试成功|^OK$|正在处理/.test(text);}
+function renderEvidenceGroups(items){
+  const groups=new Map();items.slice().sort((a,b)=>evidenceDate(b).localeCompare(evidenceDate(a))).forEach(item=>{const key=sourceName(item.source);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(item);});
+  return [...groups.entries()].map(([name,rows])=>'<section class="evidence-group"><div class="evidence-origin">'+esc(name)+'<span>'+rows.length+' 条记录</span></div><ul class="evidence-excerpts">'+rows.slice(0,4).map(item=>'<li>'+(evidenceDate(item)?'<time>'+esc(evidenceDate(item))+'</time>':'')+esc(readableMemory(item.statement||item.summary||item.content||item.text))+'</li>').join('')+'</ul></section>').join('');
+}
+const API_ORIGIN = location.protocol === 'file:' ? 'http://127.0.0.1:8766' : '';
+let NOOK_MEMORY = null;
+let NOOK_DISTILLATION = null;
+let ACTIVE_CATEGORY = 'all';
+function showArchive(name){
+  document.querySelectorAll('.archive-view').forEach(view=>view.classList.toggle('active',view.id===name+'-archive'));
+  document.querySelectorAll('.archive-tab').forEach(tab=>tab.classList.toggle('active',tab.dataset.archive===name));
+}
+function api(path,payload){
+  return fetch(API_ORIGIN+path,payload===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(async response=>{const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||'请求失败');return data;});
+}
+function categoryName(id){const found=(NOOK_MEMORY?.categories||[]).find(item=>item.id===id);return found?.name||'其他';}
+function cardKind(kind){return ({fact:'事实',preference:'偏好',experience:'经历',goal:'目标',project:'项目',routine:'习惯',insight:'洞察'})[kind]||'记忆';}
+function cardRow(item){
+  const candidate=item.status==='candidate';
+  const options=(NOOK_MEMORY?.categories||[]).filter(category=>category.status==='active').map(category=>'<option value="'+esc(category.id)+'"'+(category.id===item.category_id?' selected':'')+'>'+esc(category.name)+'</option>').join('');
+  const statusAction=candidate?'':'<button onclick="cardAction(\''+esc(item.id)+'\',\'card_candidate\')">移到待确认</button>';
+  const scopes=[['learning_format','只调整讲解方式'],['companion_style','只调整陪伴方式'],['topic_selection','只影响选题'],['review_only','只用于复习'],['travel_only','只在相关旅行'],['record_only','只归档']];
+  const scopeOptions=scopes.map(option=>'<option value="'+option[0]+'"'+(option[0]===item.scope?' selected':'')+'>'+option[1]+'</option>').join('');
+  const menu='<details class="card-more"><summary title="管理这条记忆">⋯</summary><div class="card-more-menu"><label>分类<select onchange="moveCardCategory(\''+esc(item.id)+'\',this.value)">'+options+'</select></label><label>参与范围<select onchange="setCardScope(\''+esc(item.id)+'\',this.value)">'+scopeOptions+'</select></label>'+statusAction+'<button onclick="cardAction(\''+esc(item.id)+'\',\'card_reject\')">忽略</button><button class="danger" onclick="forgetMemory(\''+esc(item.id)+'\')">彻底忘记</button></div></details>';
+  return '<article class="memory-card '+(candidate?'candidate':'')+'"><div class="memory-card-top"><span class="memory-kind">'+esc(cardKind(item.kind))+'</span><h3 title="'+esc(item.title||item.statement)+'">'+esc(item.title||item.statement)+'</h3>'+menu+'</div><p>'+esc(item.statement||item.summary)+'</p><div class="memory-evidence">'+esc(categoryName(item.category_id))+' · '+esc(item.evidence_count||1)+' 条依据 · '+esc((scopes.find(option=>option[0]===item.scope)||scopes[scopes.length-1])[1])+'</div>'+(candidate?'<button class="remember-button" onclick="cardAction(\''+esc(item.id)+'\',\'card_activate\')">确认记住</button>':'')+'</article>';
+}
+function setCategory(id){ACTIVE_CATEGORY=id;renderMemoryNook();}
+function renderMemoryNook(){
+  const memory=NOOK_MEMORY||{};
+  const cards=(memory.cards||[]).filter(item=>!['rejected','superseded'].includes(item.status)&&item.sensitivity!=='sealed');
+  const activeCards=cards.filter(item=>item.status==='active');
+  const events=memory.events||[];
+  const profile=memory.profile||{};
+  const growth=profile.archives?.growth||{sections:profile.sections||[]};
+  const emotional=profile.archives?.emotional||memory.inner_profile||{};
+  const renderSections=(sections,empty)=>(sections||[]).length?(sections||[]).map(section=>'<section class="profile-section"><h3>'+esc(readableMemory(section.title)||'阶段记录')+'</h3><p>'+esc(readableMemory(section.text))+'</p></section>').join(''):'<p class="archive-empty">'+esc(empty)+'</p>';
+  document.getElementById('profile-sections').innerHTML=renderSections(growth.sections,'还没有足够内容形成成长档案。');
+  const moments=emotional.moments||[];
+  const momentTexts=new Set(moments.map(item=>String(item.text||'').replace(/\s+/g,'')));
+  const emotionalSections=(emotional.sections||[]).filter(section=>!momentTexts.has(String(section.text||'').replace(/\s+/g,'')));
+  document.getElementById('inner-profile-sections').innerHTML=emotionalSections.length?renderSections(emotionalSections,''):moments.length?'':'<p class="archive-empty">还没有足够内容形成情感档案。</p>';
+  document.getElementById('emotional-moments-wrap').style.display=moments.length?'block':'none';
+  document.getElementById('emotional-moments').innerHTML=moments.map(item=>'<blockquote class="moment">'+esc(item.text)+'<time>'+esc(item.date||'')+'</time></blockquote>').join('');
+  document.getElementById('inner-profile-meta').textContent=String(emotional.generated_at||profile.generated_at||'').slice(0,10);
+  const profileSource=profile.generator==='ai_distillation'?'AI 已整理':'规则档案';
+  document.getElementById('profile-meta').textContent=profileSource+' · '+String(profile.generated_at||'').slice(0,10);
+  const emotionalSources=new Set(['heart_hollow','travel']);
+  const growthSources=new Set(['blackboard','orchard','noticeboard']);
+  const growthEvents=events.filter(item=>growthSources.has(String(item.source||''))&&usefulEvidence(item));
+  const growthCards=activeCards.filter(item=>item.scope!=='travel_only'&&item.scope!=='heart_only'&&item.category_id!=='travel-life'&&usefulEvidence(item));
+  const emotionalEvents=events.filter(item=>emotionalSources.has(String(item.source||''))&&usefulEvidence(item));
+  const uniqueEvidence=items=>items.filter((item,index,list)=>{const key=sourceName(item.source)+'|'+readableMemory(item.statement||item.summary||item.content||item.text);return list.findIndex(other=>sourceName(other.source)+'|'+readableMemory(other.statement||other.summary||other.content||other.text)===key)===index;});
+  const growthEvidence=uniqueEvidence([...growthCards,...growthEvents]).slice(0,80);
+  const emotionalEvidence=uniqueEvidence(emotionalEvents).slice(0,80);
+  document.getElementById('growth-evidence-count').textContent=growthEvidence.length+' 条';
+  document.getElementById('growth-evidence').innerHTML=growthEvidence.length?renderEvidenceGroups(growthEvidence):'<p class="archive-empty">还没有可展示的成长记录。</p>';
+  document.getElementById('emotional-evidence-count').textContent=emotionalEvidence.length+' 条';
+  document.getElementById('emotional-evidence').innerHTML=emotionalEvidence.length?renderEvidenceGroups(emotionalEvidence):'<p class="archive-empty">还没有可展示的树洞或旅行记录。</p>';
+}
+async function loadNook(){
+  if(window.CozyRuntime?.demoStaticSeed&&window.COZY?.demo_memory){
+    NOOK_MEMORY=JSON.parse(JSON.stringify(window.COZY.demo_memory));
+    NOOK_DISTILLATION=JSON.parse(JSON.stringify(window.COZY.demo_distillation||{}));
+    renderMemoryNook();
+    return;
+  }
+  try{
+    const [memoryData,distillData] = await Promise.all([api('/api/memory'),api('/api/memory/distillation')]);
+    NOOK_MEMORY=memoryData.memory;NOOK_DISTILLATION=distillData.distillation||{};renderMemoryNook();
+  }catch(error){
+    if(window.CozyRuntime?.demoStaticSeed&&window.COZY?.demo_memory){
+      NOOK_MEMORY=JSON.parse(JSON.stringify(window.COZY.demo_memory));
+      NOOK_DISTILLATION=JSON.parse(JSON.stringify(window.COZY.demo_distillation||{}));
+    }
+    renderMemoryNook();
+  }
+}
+function renderDistillation(){
+  const state=NOOK_DISTILLATION||{};const running=['queued','running'].includes(state.status);const button=document.getElementById('distill-button');button.disabled=running;button.textContent=running?'整理中…':'立即整理';
+  const undo=document.getElementById('distill-undo');undo.style.display=state.recent_runs?.length?'inline-block':'none';
+  const labels={completed:'上次整理已完成',failed:'上次整理失败',queued:'等待开始整理',running:'阿栗正在整理记忆档案',restored:'已恢复整理前档案',idle:'尚未进行 AI 整理'};
+  const time=String(state.last_success||state.last_run||'').slice(0,16).replace('T',' ');const provider=state.provider?' · '+state.provider:'';
+  document.getElementById('distill-status').textContent='每周日 04:00 自动更新 · '+(labels[state.status]||'等待自动整理')+(time?' · '+time:'')+provider+(state.last_error?' · '+state.last_error:'');
+}
+async function runDistillation(){
+  const button=document.getElementById('distill-button');button.disabled=true;button.textContent='整理中…';document.getElementById('distill-status').textContent='阿栗正在整理记忆档案，你可以离开这个页面。';
+  try{await api('/api/memory/distill',{force:true});pollDistillation();}catch(error){button.disabled=false;button.textContent='立即整理';document.getElementById('distill-status').textContent='没有开始整理：'+error.message;}
+}
+async function pollDistillation(){
+  try{const result=await api('/api/memory/distillation');NOOK_DISTILLATION=result.distillation||{};renderDistillation();if(NOOKENABLED(NOOK_DISTILLATION)){setTimeout(pollDistillation,1500);}else{await loadNook();}}
+  catch(error){document.getElementById('distill-status').textContent='暂时无法读取整理状态：'+error.message;}
+}
+function NOOKENABLED(state){return state&&['queued','running'].includes(state.status);}
+async function undoDistillation(){
+  const runId=NOOK_DISTILLATION?.recent_runs?.[0]?.id;if(!runId||!confirm('恢复到上次 AI 整理前的记忆档案吗？'))return;
+  try{await api('/api/memory/distill/undo',{run_id:runId});await loadNook();}catch(error){alert(error.message);}
+}
+async function toggleMemoryAssist(enabled){
+  const state=document.getElementById('permission-state');state.textContent=enabled?'正在开启……':'正在关闭……';
+  try{await api('/api/permissions',{memory_assist_enabled:enabled});await loadNook();window.CozyButler?.refreshStatus();}
+  catch(error){document.getElementById('memory-assist-toggle').checked=!enabled;state.textContent='没有修改成功：'+error.message;}
+}
+async function moveMemory(id,layer){try{await api('/api/memory/action',{action:'move',id,layer});await loadNook();}catch(error){alert(error.message);}}
+async function setPreference(id,action){try{await api('/api/memory/action',{action,id});await loadNook();}catch(error){alert(error.message);}}
+async function cardAction(id,action){try{await api('/api/memory/action',{action,id});await loadNook();}catch(error){alert(error.message);}}
+async function moveCardCategory(id,categoryId){try{await api('/api/memory/action',{action:'card_move_category',id,category_id:categoryId});await loadNook();}catch(error){alert(error.message);}}
+async function setCardScope(id,scope){try{await api('/api/memory/action',{action:'card_scope',id,scope});await loadNook();}catch(error){alert(error.message);}}
+async function createCategory(){const name=prompt('新分类叫什么？');if(!name)return;try{const result=await api('/api/memory/action',{action:'category_create',name});ACTIVE_CATEGORY=result.category?.id||'all';await loadNook();}catch(error){alert(error.message);}}
+async function renameCategory(id){const current=(NOOK_MEMORY?.categories||[]).find(item=>item.id===id);const name=prompt('新的分类名称',current?.name||'');if(!name||name===current?.name)return;try{await api('/api/memory/action',{action:'category_rename',id,name});await loadNook();}catch(error){alert(error.message);}}
+async function mergeCategory(id){const choices=(NOOK_MEMORY?.categories||[]).filter(item=>item.id!==id&&item.status==='active');const names=choices.map(item=>item.name).join('、');const name=prompt('合并到哪个分类？\n'+names);if(!name)return;const target=choices.find(item=>item.name===name||item.id===name);if(!target){alert('没有找到这个分类');return;}try{await api('/api/memory/action',{action:'category_merge',id,target_id:target.id});ACTIVE_CATEGORY=target.id;await loadNook();}catch(error){alert(error.message);}}
+async function deleteCategory(id){if(!confirm('删除这个分类吗？其中卡片会移到“其他”。'))return;try{await api('/api/memory/action',{action:'category_delete',id});ACTIVE_CATEGORY='general';await loadNook();}catch(error){alert(error.message);}}
+async function forgetMemory(id){if(!confirm('确定彻底忘记这条记忆吗？'))return;try{const result=await api('/api/memory/action',{action:'forget',id});const forgotten=new Set(result.forgotten_ids||[id]);const local=JSON.parse(localStorage.getItem('cozy_memory_events')||'[]').filter(item=>!forgotten.has(String(item.id)));localStorage.setItem('cozy_memory_events',JSON.stringify(local));window.CozyButler?.persistLocal(['cozy_memory_events']);await loadNook();}catch(error){alert(error.message);}}
+function renderTasks(tasks){
+  const box=document.getElementById('task-list');
+  box.innerHTML=tasks.length?tasks.slice(0,20).map(task=>{const raw=String(task.message||task.instruction||'').replace(/\s+/g,' ').trim();const excerpt=raw.length>260?raw.slice(0,260)+'…':raw;const status=({completed:'已完成',running:'进行中',failed:'失败'})[task.status]||task.status;return '<article class="memory-row task-row"><div><h3>'+esc(task.title||task.kind)+'</h3><p>'+esc(excerpt)+'</p><div class="memory-meta">'+esc(task.updated_at||task.started_at||'')+(task.snapshot_id?' · 快照 '+esc(task.snapshot_id):'')+'</div>'+(task.snapshot_id?'<div class="memory-actions"><button onclick="undoSnapshot(\''+esc(task.snapshot_id)+'\')">撤销这次系统修改</button></div>':'')+'</div><span class="task-status">'+esc(status)+'</span></article>';}).join(''):'<article class="memory-row"><p>还没有系统操作卷宗。</p></article>';
+}
+function renderSkills(catalog){
+  const skills=Array.isArray(catalog.skills)?catalog.skills:[];
+  const tools=Array.isArray(catalog.tools)?catalog.tools:[];
+  const groups=[
+    {title:'资讯与学习',names:['curate-news','coach-blackboard','guide-orchard','manage-toolbox','organize-checklist']},
+    {title:'生活记录',names:['listen-tree-hollow','archive-travel','curate-photos']},
+    {title:'记忆与系统',names:['manage-memory','manage-system','build-skill']},
+    {title:'生成与自动化',names:['generate-media','imagegen-assets','remove-background','run-automation']}
+  ];
+  const toolOwners={
+    'curate-news':['parse_and_archive','archive_from_knowledge','add_read_later','move_archive','remove_archive','add_watch_topic','add_source','run_weekly_report','manage_notice_category','search_knowledge'],
+    'manage-toolbox':['add_toolbox_item','add_tool_from_link','manage_toolbox_item'],
+    'guide-orchard':['manage_growth_seed','manage_knowledge_topic'],
+    'archive-travel':['manage_trip'],
+    'generate-media':['generate_media','check_media_task'],
+    'imagegen-assets':['generate_media'],
+    'remove-background':['remove-background'],
+    'manage-memory':['remember_memory','remember_preference','manage_preference','manage_memory_card','manage_memory_category','forget_memory','search_memory'],
+    'manage-system':['modify_system','system_status'],
+    'build-skill':['build_skill'],
+    'organize-checklist':['organize-checklist']
+  };
+  const skillCopy={
+    'curate-news':['资讯巡逻','收集、筛选、总结并归档值得关注的 AI 与产品资讯。'],
+    'coach-blackboard':['黑板教练','结合资讯、历史答案和记忆出题，完成批改、对照与后续练习。'],
+    'guide-orchard':['成长田向导','回应成长困惑，把持续关注沉淀成种子和可更新的知识专题。'],
+    'manage-toolbox':['工具管家','新增、分类、更新和推荐真正可使用的 AI 工具。'],
+    'organize-checklist':['清单整理','把零散事项整理成带顺序、编号和状态的清单。'],
+    'listen-tree-hollow':['树洞倾听','回应树洞倾诉，按天整理记录，并保护私密记忆不流出树洞。'],
+    'companion-dialogue':['陪伴对话','在树洞和旅行中灵活选择倾听、换角度、建议、轻松陪聊或温和反驳，并避免重复用同一段记忆。'],
+    'archive-travel':['旅行归档','按地点保存旅行日期、照片、描述、感悟和总结。'],
+    'curate-photos':['照片集整理','维护照片集、旅行相册、时间顺序和照片位置。'],
+    'manage-memory':['记忆整理','保存、检索、沉淀、纠正或忘记来自小院各处的个人记忆。'],
+    'manage-system':['掌院修改','按主人要求修改页面、配置、提示词、数据结构和交互逻辑。'],
+    'build-skill':['Skill 工匠','现有能力不足时，创建、测试并注册新的可执行 Skill。'],
+    'generate-media':['图像与视频生成','调用图片或视频模型生成素材，并把结果保存到小院。'],
+    'imagegen-assets':['图像素材生成','生成场景、植物与页面素材，统一风格、尺寸和加载格式。'],
+    'remove-background':['OpenCV 智能抠图','从项目图片中分离主体，输出带透明通道的 PNG 或 WebP。'],
+    'run-automation':['自动任务','运行资讯巡报、夜间图片、记忆维护、重试和健康检查。']
+  };
+  const skillByName=new Map(skills.map(skill=>[skill.name,skill]));
+  const modules=groups.map(group=>{
+    const cards=group.names.map(name=>skillByName.get(name)).filter(Boolean).map(skill=>{
+      const count=(toolOwners[skill.name]||[]).length;
+      const copy=skillCopy[skill.name]||[skill.name,skill.description||'系统内置 Skill'];
+      return '<article class="skill-module"><div class="skill-module-head"><h4>'+esc(skill.name+' · '+copy[0])+'</h4><span class="skill-module-badge">'+(count?count+' 项能力':skill.kind==='executable'?'可执行':'流程')+'</span></div><p>'+esc(copy[1])+'</p></article>';
+    }).join('');
+    return cards?'<section class="skill-category"><h3>'+group.title+' · '+group.names.filter(name=>skillByName.has(name)).length+'</h3><div class="skill-module-grid">'+cards+'</div></section>':'';
+  }).join('');
+  const toolNames={parse_and_archive:'网页解析归档',archive_from_knowledge:'知识归档',add_read_later:'加入待读',move_archive:'移动归档',remove_archive:'移出归档',add_watch_topic:'新增关注方向',add_source:'新增媒体源',add_toolbox_item:'新增工具卡',add_tool_from_link:'链接导入工具',manage_toolbox_item:'管理工具卡',manage_trip:'管理旅行',manage_growth_seed:'管理成长种子',manage_knowledge_topic:'管理知识专题',run_weekly_report:'生成资讯巡报',system_status:'系统状态检查',generate_media:'生成图片或视频',check_media_task:'查询生成任务',search_knowledge:'搜索知识库',manage_notice_category:'管理公告板分类',remember_memory:'记录记忆',remember_preference:'记录偏好',manage_preference:'管理偏好',manage_memory_card:'管理记忆卡片',manage_memory_category:'管理记忆分类',forget_memory:'忘记记忆',search_memory:'搜索记忆',modify_system:'修改系统',build_skill:'创建 Skill','organize-checklist':'整理清单','remove-background':'OpenCV 智能抠图'};
+  const toolType=tool=>{const name=String(tool.name||'');if(/search|check|status/.test(name))return['read','查询'];if(/generate|run_|build|organize|parse/.test(name))return['execute','执行'];return['write','操作'];};
+  const toolCards=tools.map(tool=>{const type=toolType(tool),description=String(tool.description||'').trim()||'由阿栗在需要时调用，完成对应的小院操作。';return '<article class="skill-tool-card"><div class="skill-tool-head"><h4>'+esc(tool.name+' · '+(toolNames[tool.name]||'可调用能力'))+'</h4><span class="skill-tool-type '+type[0]+'">'+type[1]+'</span></div><p>'+esc(description)+'</p></article>';}).join('');
+  const box=document.getElementById('skill-list');
+  box.innerHTML=skills.length?'<div class="skill-summary">'+skills.length+' 个 Skill 模块 · '+tools.length+' 项可执行能力</div>'+modules+'<details class="skill-tools-details"><summary>Callable Tools · 查看全部 '+tools.length+' 项可调用能力</summary><div class="skill-tool-grid">'+toolCards+'</div></details>':'<div class="empty">还没有注册 Skill</div>';
+  const health=catalog.health||{};document.getElementById('skill-health').textContent=health.summary||'尚未验证';
+}
+async function undoSnapshot(snapshotId){if(!confirm('确定恢复这个快照吗？它之后的系统文件修改会被覆盖。'))return;try{await api('/api/tasks/undo',{snapshot_id:snapshotId});location.reload();}catch(error){alert(error.message);}}
+loadNook();
+</script>
+</body>
+</html>
