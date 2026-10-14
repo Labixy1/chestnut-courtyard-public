@@ -6,13 +6,11 @@
 
 仓库管理员在 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**，再到 **Actions → Publish public preview → Run workflow** 运行发布。部署成功后，工作流的 `github-pages` 环境会给出实际预览地址。
 
-该仓库配置对应的目标地址是 `https://labixy1.github.io/chestnut-courtyard-public/`。首次发布成功前，该地址不能作为已上线链接。
+公开预览已发布，入口如下：
 
-发布后的入口：
-
-- 小院：站点首页。
-- 电脑端视频：站点下 `assets/demo/videos/index.html?device=desktop`。
-- 手机端视频：站点下 `assets/demo/videos/index.html?device=mobile`。
+- [进入小院](https://labixy1.github.io/chestnut-courtyard-public/)。
+- [电脑端视频](https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=desktop)。
+- [手机端视频](https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=mobile)。
 - 产品与技术文档：[文档目录](README.md)。
 
 静态版可浏览公告板、黑板示例、成长田、记忆档案、树洞影像与旅行记录。实时 AI、资讯更新、上传和跨端同步仍需要自行部署 Cloudflare Worker。预览不会把操作请求发送到不存在的 API。
