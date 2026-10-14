@@ -85,9 +85,11 @@ def rewrite_asset_references(destination, replacements):
             path.write_text(updated, encoding="utf-8")
 
 
-def build(mode="preview", output=None):
+def build(mode="preview", output=None, hosting="worker"):
     if mode not in {"preview", "owner"}:
         raise ValueError("mode must be preview or owner")
+    if hosting not in {"worker", "static"} or (hosting == "static" and mode != "preview"):
+        raise ValueError("static hosting is available only for the public preview")
     destination = Path(output).resolve() if output else ROOT / ("dist-owner" if mode == "owner" else "dist")
     if destination.exists():
         shutil.rmtree(destination)
@@ -96,14 +98,19 @@ def build(mode="preview", output=None):
         shutil.copy2(ROOT / name, destination / name)
     copy_tree(ROOT / "pages", destination / "pages")
     copy_tree(ROOT / "assets", destination / "assets", excluded={"uploads", "generated", "hollow"}, max_bytes=24 * 1024 * 1024)
+    if hosting == "static":
+        for image in (ROOT / "docs/images").glob("readme-*.jpg"):
+            target = destination / "docs/images" / image.name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(image, target)
     replacements = optimize_assets(destination)
     (destination / "core").mkdir()
     for name in ("butler_widget.js", "memory.js", "runtime.js", "pwa.js", "mobile.js"):
         shutil.copy2(ROOT / "core" / name, destination / "core" / name)
     seed = public_seed()
     estate = deepcopy(seed["estate_state.json"])
-    bundled_reports = read_json("notice_reports.json", seed["notice_reports.json"])
-    bundled_questions = read_json("daily_questions.json", seed["daily_questions.json"])
+    bundled_reports = seed["notice_reports.json"] if hosting == "static" else read_json("notice_reports.json", seed["notice_reports.json"])
+    bundled_questions = seed["daily_questions.json"] if hosting == "static" else read_json("daily_questions.json", seed["daily_questions.json"])
     public_bundle = {
         "estate_state": estate,
         "heart_hollow": deepcopy(seed["heart_hollow.json"]),
@@ -139,6 +146,9 @@ def build(mode="preview", output=None):
         "mode": "owner", "appName": "阿栗", "apiBase": "",
         "dataSource": "remote", "allowWrites": True, "instanceId": "owner-cloud",
     })
+    if hosting == "static":
+        runtime_config.update({"staticHosting": True, "allowWrites": False})
+        (destination / ".nojekyll").touch()
     (destination / "core/runtime-config.js").write_text(
         "window.COZY_RUNTIME_CONFIG = " + json.dumps(runtime_config, ensure_ascii=False, indent=2) + ";\n",
         encoding="utf-8",
@@ -162,8 +172,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=("preview", "owner"), default="preview")
     parser.add_argument("--output")
+    parser.add_argument("--hosting", choices=("worker", "static"), default="worker")
     args = parser.parse_args()
-    build(args.mode, args.output)
+    build(args.mode, args.output, args.hosting)
 
 
 if __name__ == "__main__":

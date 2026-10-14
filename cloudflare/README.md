@@ -84,5 +84,7 @@ stay closed until the owner toggles them with `DEMO_ADMIN_PASSCODE`; activation
 expires automatically. It has no owner memory, tree-hole data, private-room
 data, uploads, logs, or owner photos.
 
-The shareable preview URL is `https://demo.neuralnode.top`. The generated
+For an independent public static preview and video player, follow
+[the GitHub Pages publishing guide](../docs/preview.md). Static hosting has no
+AI API or private-data access. The generated
 `workers.dev` account subdomain is not used for sharing.

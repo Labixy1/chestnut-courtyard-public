@@ -28,7 +28,8 @@ def main() -> None:
     assert bundle["demo_memory"]["profile"]["archives"]["growth"]["sections"]
     runtime_config = (DIST / "core/runtime-config.js").read_text(encoding="utf-8")
     assert '"mode": "interview"' in runtime_config
-    assert '"allowWrites": true' in runtime_config
+    config = json.loads(runtime_config.split("=", 1)[1].strip().removesuffix(";"))
+    assert config["allowWrites"] is (not config.get("staticHosting", False))
     assert '"dataSource": "bundle"' in runtime_config
     assert '"demoStaticSeed": true' in runtime_config
     assert (DIST / "core/mobile.js").is_file()

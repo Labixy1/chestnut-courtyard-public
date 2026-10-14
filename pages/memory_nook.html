@@ -168,6 +168,7 @@ function showArchive(name){
   document.querySelectorAll('.archive-tab').forEach(tab=>tab.classList.toggle('active',tab.dataset.archive===name));
 }
 function api(path,payload){
+  if(window.CozyRuntime?.staticHosting)return Promise.reject(new Error('这是静态演示；记忆更新需要部署 Worker 服务。'));
   return fetch(API_ORIGIN+path,payload===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(async response=>{const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||'请求失败');return data;});
 }
 function categoryName(id){const found=(NOOK_MEMORY?.categories||[]).find(item=>item.id===id);return found?.name||'其他';}

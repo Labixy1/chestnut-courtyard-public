@@ -1,4 +1,5 @@
 (function(){
+  if(window.CozyRuntime?.staticHosting)return;
   if(!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol))return;
   const prefix=location.pathname.includes('/pages/')?'../':'';
   let refreshing=false;

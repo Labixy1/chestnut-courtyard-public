@@ -10,7 +10,8 @@
   }
   const requested=VALID_MODES.has(query)?query:configured.mode;
   const mode=VALID_MODES.has(requested)?requested:autoMode();
-  const readOnly=mode==='preview'||configured.allowWrites===false;
+  const staticHosting=configured.staticHosting===true;
+  const readOnly=staticHosting||mode==='preview'||configured.allowWrites===false;
   const source=configured.dataSource==='auto'?(mode==='dev'?'local':'bundle'):configured.dataSource;
   const apiBase=location.protocol==='file:'?'http://127.0.0.1:8766':String(configured.apiBase||'');
   const keyForPath=path=>String(path||'').split('/').pop().replace(/\.json$/,'');
@@ -47,13 +48,13 @@
   seedDemoBrowserState(false);
   function assertWritable(){if(readOnly)throw new Error('当前是公开预览，只能浏览，数据不会写入');}
   window.CozyRuntime=Object.freeze({
-    mode,readOnly,dataSource:source,apiBase,demoStaticSeed:configured.demoStaticSeed===true,
+    mode,readOnly,staticHosting,dataSource:source,apiBase,demoStaticSeed:configured.demoStaticSeed===true,
     appName:String(configured.appName||'阿栗'),
     instanceId:String(configured.instanceId||mode),
     loadJson,assertWritable,seedDemoBrowserState,
     capabilities:Object.freeze({
-      ai:mode!=='preview',memory:mode!=='preview',upload:mode!=='preview',
-      systemChange:mode==='owner'||mode==='dev'
+      ai:!readOnly,memory:!readOnly,upload:!readOnly,
+      systemChange:!readOnly&&(mode==='owner'||mode==='dev')
     })
   });
   document.documentElement.dataset.cozyMode=mode;

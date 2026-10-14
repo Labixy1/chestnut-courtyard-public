@@ -2953,6 +2953,7 @@ let applyingButlerState = false;
 let butlerStateSyncTimer = null;
 
 async function cozyApi(path, payload, timeout=165000){
+  if(window.CozyRuntime?.staticHosting)throw new Error('这是静态演示；实时 AI、更新资讯和云端同步需要部署 Worker 服务。');
   const controller = new AbortController();
   const timer = setTimeout(()=>controller.abort(), timeout);
   try{
@@ -2980,6 +2981,10 @@ async function cozyApi(path, payload, timeout=165000){
 
 async function refreshButlerConnection(){
   const badge = document.getElementById('butler-connection');
+  if(window.CozyRuntime?.staticHosting){
+    if(badge){badge.className='butler-connection';badge.textContent='静态演示';}
+    return;
+  }
   try{
     const data = await cozyApi('/api/status', undefined, 15000);
     butlerServiceOnline = true;

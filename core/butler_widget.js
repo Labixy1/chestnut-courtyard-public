@@ -150,6 +150,7 @@
     return syncLocalState(selected);
   }
   function api(path,payload,timeout=900000){
+    if(RUNTIME.staticHosting)return Promise.reject(new Error('这是静态演示；实时 AI、上传和云端同步需要部署 Worker 服务。'));
     if(RUNTIME.readOnly&&payload!==undefined)return Promise.reject(new Error('当前是公开预览，只能浏览，数据不会写入'));
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
     const options=payload===undefined?{signal:controller.signal}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal};

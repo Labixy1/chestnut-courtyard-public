@@ -3,7 +3,7 @@
   <h1>阿栗 · AI 个人成长助手</h1>
   <p><strong>把资讯、思考、对话与长期记忆连接成一个持续成长的闭环。</strong></p>
   <p>
-    <a href="https://demo.neuralnode.top">在线演示</a> ·
+    <a href="docs/preview.md">公开预览与视频</a> ·
     <a href="docs/README.md">产品与技术文档</a> ·
     <a href="docs/07-测试与运维手册.md">测试与运维</a>
   </p>
@@ -16,15 +16,17 @@
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="assets/demo/videos/ali-demo-desktop-30s.mp4"><img src="assets/demo/storyboard/04-notice.jpg" alt="阿栗电脑端演示" width="520"></a><br>
-      <b>电脑端演示</b><br><sub>点击画面播放 · 30 秒</sub>
+      <a href="https://raw.githubusercontent.com/Labixy1/chestnut-courtyard-public/main/assets/demo/videos/ali-demo-desktop-30s.mp4"><img src="assets/demo/storyboard/04-notice.jpg" alt="阿栗电脑端演示" width="520"></a><br>
+      <b>电脑端演示</b><br><sub>点击下载视频 · 30 秒</sub>
     </td>
     <td align="center" width="50%">
-      <a href="assets/demo/videos/ali-demo-mobile-30s.mp4"><img src="docs/images/readme-home-mobile.jpg" alt="阿栗手机端演示" width="220"></a><br>
-      <b>手机端演示</b><br><sub>点击画面播放 · 30 秒</sub>
+      <a href="https://raw.githubusercontent.com/Labixy1/chestnut-courtyard-public/main/assets/demo/videos/ali-demo-mobile-30s.mp4"><img src="docs/images/readme-home-mobile.jpg" alt="阿栗手机端演示" width="220"></a><br>
+      <b>手机端演示</b><br><sub>点击下载视频 · 30 秒</sub>
     </td>
   </tr>
 </table>
+
+在线播放页与隔离的静态预览已配置为 GitHub Pages 构建；仓库管理员首次启用 Pages 后即可发布。详见 [公开预览与视频](docs/preview.md)。
 
 ## 为什么做阿栗
 

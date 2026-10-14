@@ -106,6 +106,7 @@
   }
   async function updateCloudStatus(){
     const node=document.getElementById('cozy-mobile-cloud');if(!node)return;
+    if(window.CozyRuntime?.staticHosting){node.textContent='静态演示';return;}
     if(location.protocol==='file:'){node.textContent='本地浏览 · 启动服务后同步云端';return;}
     try{const response=await fetch((window.CozyRuntime?.apiBase||'')+'/api/status',{headers:{accept:'application/json'}}),data=await response.json();if(!response.ok||!data.ok)throw new Error();node.className='cozy-mobile-cloud online';node.textContent=data.service==='cloud'?'私人云端已连接':'本地服务已连接，数据会同步';}
     catch(_error){node.className='cozy-mobile-cloud failed';node.textContent='云端暂未连接，本页内容仍可浏览';}
