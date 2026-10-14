@@ -1844,14 +1844,16 @@ function photoAssetId(value){let h=2166136261;for(const char of String(value||''
 function seedPhotoAlbums(){
   const saved=readNoticeList('cozy_photo_albums').filter(album=>album.id!=='courtyard_all');
   const personal=((CORE.estate_state&&CORE.estate_state.wall_photos)||[]).map(p=>({id:p.id||'photo_'+Math.random().toString(36).slice(2),src:p.file||'',caption:p.note||p.title||'随手拍',date:p.date||localCalendarDate()})).filter(p=>p.src);
-  const allTrips = JSON.parse(localStorage.getItem('cozy_trips') || '[]').concat((CORE.estate_state&&CORE.estate_state.travel&&CORE.estate_state.travel.history)||[]);
-  const travelAlbums=allTrips.map((trip,index)=>({id:'travel_'+(trip.id||index),title:trip.place||'一次旅行',source:'travel',date:trip.date||localCalendarDate(),photos:(trip.photos&&trip.photos.length?trip.photos:[trip.file]).filter(Boolean).map((src,pIndex)=>({id:'travel_photo_'+index+'_'+pIndex,src,caption:trip.line||trip.place||'旅行照片',date:trip.date||localCalendarDate()}))})).filter(album=>album.photos.length);
+  const tripKeys=new Set();
+  const allTrips = JSON.parse(localStorage.getItem('cozy_trips') || '[]').concat((CORE.estate_state&&CORE.estate_state.travel&&CORE.estate_state.travel.history)||[]).filter(trip=>{const key=trip.id||[trip.place,trip.start||trip.date,trip.end].join('|');if(tripKeys.has(key))return false;tripKeys.add(key);return !trip.deleted;});
+  const travelAlbums=allTrips.map((trip,index)=>({id:'travel_'+(trip.id||index),title:trip.place||'一次旅行',source:'travel',date:trip.start||trip.date||localCalendarDate(),photos:(trip.photos&&trip.photos.length?trip.photos:[trip.file]).filter(Boolean).map((src,pIndex)=>({id:'travel_photo_'+index+'_'+pIndex,src,caption:trip.line||trip.place||'旅行照片',date:trip.start||trip.date||localCalendarDate()}))})).filter(album=>album.photos.length);
   const demo={id:'demo_courtyard',title:'小院试运行',source:'demo',date:'2026-08-08',photos:[
     {id:'demo_1',src:'assets/estate/panorama_morning.webp',caption:'清晨场景测试',date:'2026-08-08'},
     {id:'demo_2',src:'assets/estate/panorama_rain.webp',caption:'雨天场景测试',date:'2026-08-08'},
     {id:'demo_3',src:'assets/plants/orchard_summer.webp',caption:'夏日成长田',date:'2026-08-08'}
   ]};
-  let albums=saved.length?saved.slice():[];
+  const albumIds=new Set();
+  let albums=saved.filter(album=>{if(albumIds.has(album.id))return false;albumIds.add(album.id);return true;}).map(album=>{const trip=travelAlbums.find(item=>item.id===album.id);return trip?{...album,date:trip.date}:album;});
   if(!albums.length){if(personal.length)albums.push({id:'personal_initial',title:'八月随手拍',source:'upload',date:personal[0].date,photos:personal});albums.push(...travelAlbums,demo);savePhotoAlbums(albums);}
   const existingIds=new Set(albums.map(album=>album.id));travelAlbums.forEach(album=>{if(!existingIds.has(album.id))albums.push(album);});
   const courtyardScenes=[
@@ -2318,7 +2320,8 @@ function reportCardHtml(item, category){
   const laterActive = isNoticeReadLater(payload);
   const chestActive = isNoticeChestItem(payload);
   const source=preferredNoticeUrl(item),sourceUrl=source.original;
-  const link = sourceUrl ? '<a class="source-link" href="'+escapeNotice(source.url)+'" target="_blank" rel="noopener">'+(source.localized?'查看中文全文':'查看原文')+'</a>'+(source.localized?'<a class="source-link" href="'+escapeNotice(source.original)+'" target="_blank" rel="noopener">英文原文</a>':'') : '<span class="source-unavailable">原文地址待修复</span>';
+  const demoSource=window.CozyRuntime?.staticHosting&&/^https?:\/\/example\.com(?:\/|$)/i.test(sourceUrl);
+  const link = demoSource ? '<span class="source-unavailable">演示资料</span>' : sourceUrl ? '<a class="source-link" href="'+escapeNotice(source.url)+'" target="_blank" rel="noopener">'+(source.localized?'查看中文全文':'查看原文')+'</a>'+(source.localized?'<a class="source-link" href="'+escapeNotice(source.original)+'" target="_blank" rel="noopener">英文原文</a>':'') : '<span class="source-unavailable">原文地址待修复</span>';
   const displayTitle=cleanNoticeDisplayText(item.title);
   const displaySummary=cleanNoticeDisplayText(item.source_summary||item.original_summary||item.summary).slice(0,300);
   const rawAiSummary = cleanNoticeDisplayText(noticeAISummary(item));
@@ -2331,7 +2334,7 @@ function reportCardHtml(item, category){
   const aiSummary=aiKey&&aiKey!==titleKey&&aiKey!==summaryKey&&aiKey!==normalizeComparison(translatedSummary)?rawAiSummary:'';
   const rawProductTip=cleanNoticeDisplayText(item.product_tip||item.product_manager_tip||'');
   const productTip=noticeTextIsChinese(rawProductTip,8)&&normalizeComparison(rawProductTip)!==aiKey?rawProductTip:'';
-  const linkActions = sourceUrl ? '<button class="article-action" data-url="'+escapeNotice(sourceUrl)+'" onclick="copyNoticeLink(this)">复制原链</button><button class="article-action tool-extract-btn" data-url="'+escapeNotice(sourceUrl)+'" data-title="'+escapeNotice(item.title)+'" data-summary="'+escapeNotice(item.summary||'')+'" data-ai-summary="'+escapeNotice(aiSummary)+'" data-category="'+escapeNotice(tag)+'" data-media="'+escapeNotice(item.media||'')+'" onclick="extractToolFromNotice(this)">加入工具箱</button>' : '';
+  const linkActions = sourceUrl&&!demoSource ? '<button class="article-action" data-url="'+escapeNotice(sourceUrl)+'" onclick="copyNoticeLink(this)">复制原链</button><button class="article-action tool-extract-btn" data-url="'+escapeNotice(sourceUrl)+'" data-title="'+escapeNotice(item.title)+'" data-summary="'+escapeNotice(item.summary||'')+'" data-ai-summary="'+escapeNotice(aiSummary)+'" data-category="'+escapeNotice(tag)+'" data-media="'+escapeNotice(item.media||'')+'" onclick="extractToolFromNotice(this)">加入工具箱</button>' : '';
   const originalSummary = displaySummary&&normalizeComparison(displaySummary)!==normalizeComparison(displayTitle)
     ? '<p class="notice-original-summary" lang="'+(noticeTextIsChinese(displaySummary)?'zh-CN':'en')+'">'+escapeNotice(displaySummary)+'</p>'
     : '';
@@ -3699,6 +3702,10 @@ function setDemoButtonsBusy(active){document.querySelectorAll('.demo-control').f
 async function refreshDemoActivation(){
   if(window.CozyRuntime?.mode!=='interview')return;
   const button=document.getElementById('demo-ai');
+  if(window.CozyRuntime?.staticHosting){
+    if(button){button.textContent='静态演示';button.disabled=true;button.title='实时 AI 需要自行部署 Worker';}
+    return {active:false};
+  }
   try{
     const data=await cozyApi('/api/demo/status',undefined,8000),active=Boolean(data.activation?.active);
     button?.classList.toggle('ai-active',active);
@@ -3714,15 +3721,18 @@ async function resetDemoEstate(){
   catch(error){setDemoButtonsBusy(false);if(button)button.textContent='一键重置';openOverlay('<h2>重置没有完成</h2><p class="sub">'+escapeNotice(error.message)+'</p>','demo-guide-panel');}
 }
 async function loadDemoGuide(){
+  if(window.CozyRuntime?.staticHosting){showDemoGuide();return;}
   const button=document.getElementById('demo-guide');setDemoButtonsBusy(true);if(button)button.textContent='准备示例…';
   if(window.CozyRuntime?.demoStaticSeed){clearDemoBrowserState();window.CozyRuntime.seedDemoBrowserState(true);sessionStorage.setItem('cozy_demo_show_guide','1');location.reload();return;}
   try{await cozyApi('/api/demo/seed',{},20000);clearDemoBrowserState();sessionStorage.setItem('cozy_demo_show_guide','1');location.reload();}
   catch(error){setDemoButtonsBusy(false);if(button)button.textContent='引导示例';openOverlay('<h2>示例没有载入</h2><p class="sub">'+escapeNotice(error.message)+'</p>','demo-guide-panel');}
 }
 function showDemoGuide(){
-  openOverlay('<div class="demo-guide"><h2>从一条完整成长链认识栗壳小院</h2><p class="sub">虚构示例数据已经装好，可以自由操作，最后用右上角“一键重置”恢复。</p><div class="demo-guide-list"><div class="demo-guide-step"><b>1</b><span>公告板：从 AI 动态提炼产品判断并留下阅读笔记。</span></div><div class="demo-guide-step"><b>2</b><span>黑板与成长田：查看一次有证据的批改，继续沉淀为专题知识。</span></div><div class="demo-guide-step"><b>3</b><span>密阁与树洞：查看证据化档案，以及凌晨四点生成的深刻记忆影像。</span></div></div><button class="bb-submit" onclick="closeOverlay();openNotice()">从公告板开始</button></div>','demo-guide-panel');
+  const intro=window.CozyRuntime?.staticHosting?'虚构示例数据已经装好。':'虚构示例数据已经装好，可以自由操作，最后用右上角“一键重置”恢复。';
+  openOverlay('<div class="demo-guide"><h2>从一条完整成长链认识栗壳小院</h2><p class="sub">'+intro+'</p><div class="demo-guide-list"><div class="demo-guide-step"><b>1</b><span>公告板：从 AI 动态提炼产品判断并留下阅读笔记。</span></div><div class="demo-guide-step"><b>2</b><span>黑板与成长田：查看一次有证据的批改，继续沉淀为专题知识。</span></div><div class="demo-guide-step"><b>3</b><span>密阁与树洞：查看证据化档案与深刻记忆影像。</span></div></div><button class="bb-submit" onclick="closeOverlay();openNotice()">从公告板开始</button></div>','demo-guide-panel');
 }
 function openDemoActivation(){
+  if(window.CozyRuntime?.staticHosting)return;
   const dialog=document.getElementById('demo-dialog'),input=document.getElementById('demo-passcode'),status=document.getElementById('demo-dialog-status');
   if(status)status.textContent='';if(input)input.value='';dialog?.classList.add('show');dialog?.setAttribute('aria-hidden','false');setTimeout(()=>input?.focus(),40);
 }

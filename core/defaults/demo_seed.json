@@ -76,7 +76,16 @@
             "link": "https://example.com/demo-domestic"
           }
         ],
-        "sections": [],
+        "sections": [
+          {
+            "name": "国内外动态",
+            "items": [{"id":"demo_section_models","title":"模型能力趋于成熟，下一步比拼可验证的应用效果","category":"模型与技术","media":"演示数据","published_at":"2026-08-28","original_summary":"Model teams increasingly evaluate performance on real tasks, not only public leaderboards.","translation_zh":"模型团队越来越重视真实任务表现，不再只依赖公开榜单。","ai_summary":"选型要用自己的任务集验证质量与成本；公开基准只能帮助缩小候选范围。","product_tip":"固定输入、成功标准和旧方案基线，避免每次升级换一套衡量方法。","link":"https://example.com/demo-models"}]
+          },
+          {
+            "name": "产品相关精选",
+            "items": [{"id":"demo_section_workflow","title":"AI 办公助手把引用来源与人工确认融入工作流","category":"产品与实践","media":"演示数据","published_at":"2026-08-28","original_summary":"虚构案例：办公助手生成草稿后，保留证据出处，并在发送前由用户确认。","ai_summary":"产品不是尽可能替用户做所有事，而是把高频低风险步骤自动化，让用户在关键决策处保留控制权。","product_tip":"把生成草稿、预览差异和确认发送拆开，分别定义完成条件。","link":"https://example.com/demo-office"}]
+          }
+        ],
         "insights": [
           "Agent 的核心壁垒逐渐转向工作流、权限与可靠性。",
           "评测必须同时覆盖价值、风险和成本。"
@@ -153,13 +162,13 @@
     ]
   },
   "local_state": {
-    "version": 1,
+    "version": 3,
     "updated_at": "2026-08-29T20:02:41.952Z",
     "values": {
       "cozy_notice_notes": [
         {
           "id": "demo_note",
-          "key": "demo_news_agent",
+          "key": "url:https://example.com/demo-agent",
           "title": "Agent 产品开始把权限与结果验证放到核心链路",
           "note": "说明方案时不能只讲模型和工具，还要讲授权、验证、失败恢复与审计。",
           "createdAt": "2026-08-28T09:20:00+08:00"
@@ -309,6 +318,13 @@
             "2026-08-28"
           ]
         }
+      ],
+      "cozy_orchard_garden": [
+        {"id":"plot_1","slot":0,"seedId":"demo_seed_agent","title":"把 Agent 从演示做成可靠产品","hint":"从任务价值、权限、结果核验到失败恢复，建立完整执行闭环。","plantType":"golden","growth":22,"stage":"fruiting","sources":["orchard","blackboard"],"topicIds":["demo_topic_agent"],"eventIds":[],"harvestReady":true},
+        {"id":"plot_2","slot":1,"seedId":"demo_seed_eval","title":"AI 功能的评测与上线判断","hint":"用真实任务集同时衡量效果、风险和成本。","plantType":"flower","growth":13,"stage":"leafy","sources":["orchard"],"topicIds":[],"eventIds":[],"harvestReady":false}
+      ],
+      "cozy_orchard_backpack": [
+        {"id":"demo_harvest_agent","title":"Agent 产品的可靠执行闭环","date":"2026-08-29","topicIds":["demo_topic_agent"],"insight":"先明确价值与权限，再核验真实结果，最后准备失败恢复。"}
       ],
       "cozy_orchard_topics": [
         {
@@ -493,16 +509,14 @@
         }
       ],
       "cozy_trip_reflections": {
-        "demo_trip_hangzhou": [
-          {
-            "id": "demo_reflection",
-            "date": "2026-08-18",
-            "title": "慢下来之后看见的东西",
-            "text": "做产品时总想多给用户一点，但这次旅行提醒我：清晰的节奏和适当的留白，本身也是一种帮助。",
-            "summary": "从旅行中的慢节奏，联想到产品体验需要给用户留出理解和选择的空间。",
-            "reply": "你记住的不是景点清单，而是一种重新看待节奏的方法。"
-          }
-        ]
+        "demo_trip_hangzhou": {
+          "id": "demo_reflection",
+          "date": "2026-08-18",
+          "title": "慢下来之后看见的东西",
+          "text": "做产品时总想多给用户一点，但这次旅行提醒我：清晰的节奏和适当的留白，本身也是一种帮助。",
+          "summary": "从旅行中的慢节奏，联想到产品体验需要给用户留出理解和选择的空间。",
+          "companionReply": "你记住的不是景点清单，而是一种重新看待节奏的方法。"
+        }
       },
       "cozy_notice_requests": []
     }

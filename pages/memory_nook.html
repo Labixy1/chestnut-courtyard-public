@@ -206,7 +206,8 @@ function renderMemoryNook(){
   const growthSources=new Set(['blackboard','orchard','noticeboard']);
   const growthEvents=events.filter(item=>growthSources.has(String(item.source||''))&&usefulEvidence(item));
   const growthCards=activeCards.filter(item=>item.scope!=='travel_only'&&item.scope!=='heart_only'&&item.category_id!=='travel-life'&&usefulEvidence(item));
-  const emotionalEvents=events.filter(item=>emotionalSources.has(String(item.source||''))&&usefulEvidence(item));
+  const emotionalPool=window.CozyRuntime?.demoStaticSeed?[...events,...(memory.sealed||[])]:events;
+  const emotionalEvents=emotionalPool.filter(item=>emotionalSources.has(String(item.source||''))&&usefulEvidence(item));
   const uniqueEvidence=items=>items.filter((item,index,list)=>{const key=sourceName(item.source)+'|'+readableMemory(item.statement||item.summary||item.content||item.text);return list.findIndex(other=>sourceName(other.source)+'|'+readableMemory(other.statement||other.summary||other.content||other.text)===key)===index;});
   const growthEvidence=uniqueEvidence([...growthCards,...growthEvents]).slice(0,80);
   const emotionalEvidence=uniqueEvidence(emotionalEvents).slice(0,80);

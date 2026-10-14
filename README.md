@@ -1,179 +1,146 @@
 <div align="center">
-  <img src="assets/app/icon-192.png" width="88" alt="阿栗应用图标">
-  <h1>阿栗 · AI 个人成长助手</h1>
-  <p><strong>把资讯、思考、对话与长期记忆连接成一个持续成长的闭环。</strong></p>
+  <img src="assets/app/icon-192.png" width="76" alt="阿栗图标">
+  <h1>阿栗 · AI 个人成长小院</h1>
+  <p><strong>让看过的资讯、想过的问题、说过的话，成为可以继续生长的积累。</strong></p>
+  <p>资讯获取 · 思考训练 · 多轮学习 · 有依据的长期记忆</p>
   <p>
-    <a href="https://labixy1.github.io/chestnut-courtyard-public/">在线演示</a> ·
-    <a href="docs/README.md">产品与技术文档</a> ·
-    <a href="docs/07-测试与运维手册.md">测试与运维</a>
+    <a href="https://labixy1.github.io/chestnut-courtyard-public/"><strong>进入小院</strong></a> &nbsp; / &nbsp;
+    <a href="https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=desktop">30 秒演示</a> &nbsp; / &nbsp;
+    <a href="docs/README.md">产品与技术文档</a>
   </p>
 </div>
 
-> 这是一个由产品经理通过持续自然语言对话驱动 Codex，从需求定义、交互设计到开发、测试和云端部署完成的 AI 原生个人项目。仓库只包含程序、公开素材和演示数据，不包含真实树洞、记忆、照片、口令或 API Key。
+<a href="https://labixy1.github.io/chestnut-courtyard-public/"><img src="assets/demo/storyboard/01-home.jpg" width="100%" alt="阿栗小院电脑端全景，点击进入公开演示"></a>
 
-## 30 秒产品演示
+阿栗是一个用空间组织任务的个人 AI 成长系统，而不只是另一个聊天窗口。它由产品经理定义需求、交互、任务规则与验收标准，通过持续对话、截图反馈和实际测试驱动 **Codex** 完成开发，采用原生网页与 **Cloudflare Worker / KV / R2** 部署。
+
+> **公开演示与私人实例分开。** 在线预览使用虚构数据，可查看已有资讯、批改、聊天、专题与记忆；不会调用付费模型或处理私人内容。实时 AI、上传、定时任务与跨端同步需要自行部署服务。
+
+## 先看 30 秒
 
 <table>
   <tr>
-    <td align="center" width="50%">
-      <a href="https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=desktop"><img src="assets/demo/storyboard/04-notice.jpg" alt="阿栗电脑端演示" width="520"></a><br>
-      <b>电脑端演示</b><br><sub>点击画面播放 · 30 秒</sub>
+    <td align="center" width="65%">
+      <a href="https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=desktop"><img src="assets/demo/storyboard/04-notice.jpg" width="560" alt="电脑端视频封面：公告板资讯巡报"></a><br>
+      <strong>电脑端 · 场景式小院</strong><br>
+      <a href="https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=desktop">播放电脑端视频</a>
     </td>
-    <td align="center" width="50%">
-      <a href="https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=mobile"><img src="docs/images/readme-home-mobile.jpg" alt="阿栗手机端演示" width="220"></a><br>
-      <b>手机端演示</b><br><sub>点击画面播放 · 30 秒</sub>
+    <td align="center" width="35%">
+      <a href="https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=mobile"><img src="docs/images/readme-home-mobile.jpg" width="150" alt="手机端视频封面：小院首页"></a><br>
+      <strong>手机端 · 随时继续</strong><br>
+      <a href="https://labixy1.github.io/chestnut-courtyard-public/assets/demo/videos/index.html?device=mobile">播放手机端视频</a>
     </td>
   </tr>
 </table>
 
-在线演示使用隔离的虚构数据，可浏览各模块；实时 AI、上传和跨端同步需要自行部署 Worker。视频可在线播放或下载，详见 [公开预览与视频](docs/preview.md)。
+## 一条持续成长的路径
 
-## 为什么做阿栗
+**读资讯 → 练思考 → 继续追问 → 整理知识 → 形成长期记忆。**
 
-普通 AI 对话很容易停在“一问一答”：资讯看过就忘，思考没有反馈，长期对话也难以形成可靠积累。阿栗尝试把四件事接起来：
+| 模块 | 用户得到什么 | 如何实现 |
+| --- | --- | --- |
+| **公告板** | 国内外资讯、中文摘要、AI 总结、产品关注点与阅读笔记 | 获取信源 → 筛选去重 → 模型整理 → 归档；Worker Cron 定时触发 |
+| **黑板** | 有场景的题目、按证据评分、具体改进建议与参考回答 | 题目与评分规则 → 单次模型批改 → 结构校验 → 保存异步结果 |
+| **成长田** | 多轮学习对话、专题笔记、可复习的收成背包 | 近期对话上下文 → 解惑 → 每周汇总聊天、答题与资讯笔记 |
+| **密阁** | 成长档案、情感档案，以及可追溯的依据 | 原始记录 → 候选与生效记忆 → 按来源分开整理 → 支持撤销 |
+| **树洞** | 一句话签语、陪伴对话、值得留下的记忆影像 | 文本/语音输入 → 模型回应；凌晨 4 点分析前一日窗口，必要时调用生图接口 |
+| **旅行与卧室** | 旅程、照片与感悟，安静的场景互动 | 记录合并、R2 媒体保存；卧室保留灯光等本地互动 |
+| **管家与工具箱** | 工具管理与受限任务执行 | 任务路由 → 受控工具调用 → 状态与结果核验；不等于无限自主 Agent |
 
-1. **公告板**获取并筛选国内外 AI 与产品资讯，保留来源、中文摘要、AI 判断和阅读笔记。
-2. **黑板**把值得思考的问题转成每日训练，由独立评分基准完成批改、示范和下一步练习。
-3. **成长田**通过多轮学习对话解释概念、比较方案、梳理困惑，并沉淀为可复习的知识专题。
-4. **密阁记忆**把经过确认或重复验证的信息整理为带依据、边界和适用范围的长期记忆。
-
-```mermaid
-flowchart LR
-    A[国内外 AI / 产品资讯] --> B[公告板筛选与总结]
-    B --> C[黑板思考训练]
-    C --> D[成长田对话与知识沉淀]
-    D --> E[密阁长期记忆]
-    E --> B
-    E --> C
-    E --> D
-```
-
-## 手机端体验
-
-以下画面来自隔离的公开演示环境，内容均为虚构示例数据。
+### 手机上的四个入口
 
 <table>
   <tr>
-    <td align="center"><img src="docs/images/readme-home-mobile.jpg" width="220" alt="阿栗小院手机首页"><br><b>空间化首页</b><br><sub>用房间组织不同任务与心境</sub></td>
-    <td align="center"><img src="docs/images/readme-notice-mobile.jpg" width="220" alt="公告板资讯巡报"><br><b>公告板</b><br><sub>资讯、AI 总结与产品判断</sub></td>
-    <td align="center"><img src="docs/images/readme-blackboard-mobile.jpg" width="220" alt="黑板每日一题"><br><b>黑板</b><br><sub>每日训练、批改与示范回答</sub></td>
-    <td align="center"><img src="docs/images/readme-orchard-mobile.jpg" width="220" alt="成长田学习对话"><br><b>成长田</b><br><sub>多轮解惑并沉淀知识专题</sub></td>
+    <td align="center" width="25%"><img src="docs/images/readme-home-mobile.jpg" width="190" alt="小院手机首页"><br><strong>进入小院</strong></td>
+    <td align="center" width="25%"><img src="docs/images/readme-notice-mobile.jpg" width="190" alt="手机公告板"><br><strong>读一份巡报</strong></td>
+    <td align="center" width="25%"><img src="docs/images/readme-blackboard-mobile.jpg" width="190" alt="手机黑板"><br><strong>练一道题</strong></td>
+    <td align="center" width="25%"><img src="docs/images/readme-orchard-mobile.jpg" width="190" alt="手机成长田"><br><strong>继续学下去</strong></td>
   </tr>
 </table>
 
-## 产品亮点
+### 留下来的不只是聊天记录
 
-### 1. 不只回答，而是形成成长闭环
+<table>
+  <tr>
+    <td width="50%"><img src="assets/demo/storyboard/10-orchard-topic.jpg" width="100%" alt="成长田专题笔记"><br><strong>把碎片变成专题知识</strong><br>框架、逐层讲解、完整案例与复习要点集中在一篇笔记里。</td>
+    <td width="50%"><img src="assets/demo/storyboard/13-heart-memory.jpg" width="100%" alt="树洞深刻记忆影像"><br><strong>把具体经历留成影像</strong><br>合并相关对话后再判断是否值得生成，不为每句话强行画图。</td>
+  </tr>
+</table>
 
-资讯不是终点。公告板中的重要主题可以进入黑板训练，答题暴露的知识缺口可以回到成长田继续追问，稳定的学习方式和知识关注再进入密阁，反过来影响后续选题与讲解方式。
+## 设计上的取舍
 
-### 2. 先有评分基准，再看用户答案
+- **训练不是只给一个分数。** 评分基准先于答案确定，评分项需要引用原答案证据；给出差距与下一步，而不是一味鼓励或逐字匹配。
+- **记忆不是无限拼接上下文。** 成长与情感依据分开，保留来源、适用范围、时效和撤回机制，避免一次倾诉被固化成长期判断。
+- **Skill 是做法，不是神奇插件。** 内置任务规则统一输入、步骤、边界、输出与验收；实际执行仍由代码、模型网关和接口完成。
+- **失败也是完整体验的一部分。** 异步状态、重复提交保护、模型降级和存储兜底用于处理真实失败，不把“已请求”包装成“已完成”。
+- **公开分享不暴露私人生活。** 独立演示种子与发布扫描隔离真实记忆、答案、照片、日志及密钥。
 
-黑板会先冻结参考答案、评分点和题型重点，再对用户答案进行诊断，避免被用户表述带偏。结果不只给分，还包含：答得好的地方、方向偏差、可操作的改进方式、大白话记忆提示和阿栗示范答案。
-
-### 3. 有边界的长期记忆
-
-记忆分为原始证据、候选卡片、生效卡片和两份长期档案。AI 每周日 04:00 整理成长档案与情感档案：前者使用生效卡片，后者独立使用有界的树洞与旅行记录；输出必须引用有效来源 ID，失败保留旧档案，并支持快照撤销。
-
-树洞另外保留两种有辨识度的体验：签语模式会等主人表达完整后，只返回一句与当下具体内容有关的短回应；当天结束后，系统会统一分析当天多轮对话，若存在足够具体、值得留下的记忆，就自动生成一张克制的绘本插画并保存到私有 R2。无需用户确认，短促情绪、试音和重复句也不会被强行画成图片。
-
-### 4. 面向真实失败设计兜底
-
-- 主人版普通任务优先 Workers AI Llama，高质量任务优先 Workers AI Qwen；两路均失败或额度耗尽后，依次使用 Gemini 2.5 Flash-Lite、阿里云 Qwen Flash 兜底。Qwen Flash 需要在 Cloudflare 配置 `DASHSCOPE_API_KEY`；DeepSeek 欠费期间与 OpenAI、GLM 默认禁用。
-- 异步任务在切页或刷新后继续恢复状态，避免按钮重置后重复提交。
-- Cloudflare KV 写入超额时，关键任务和状态自动降级到 R2。
-- 图片、视频和手动上传媒体统一进入私有 R2，并使用容量上限和省空间画质。
-- 资讯采用多来源独立抓取，一个来源失败不会阻断整次巡报。
-
-### 5. 用 Codex 构建产品，而不是只生成代码
-
-项目采用“提出真实问题 → 明确验收标准 → Codex 实现 → 公网手机端测试 → 根据反馈继续迭代”的协作方式。产品决策、隐私边界和最终验收由人负责，Codex承担代码实现、测试、部署与文档同步。
-
-## 功能地图
-
-| 模块 | 核心能力 |
-| --- | --- |
-| 公告板 | 多源资讯、中文摘要、AI 总结、产品经理关注点、笔记、稍后看与归档 |
-| 黑板 | 每日一题、分类轮换、独立评分基准、AI 批改、示范答案、历史与星标 |
-| 成长田 | 多轮学习对话、成长种子、专题本、知识沉淀和复习线索 |
-| 密阁 | 证据卡片、候选确认、分类管理、定时蒸馏、隐私隔离与撤销 |
-| 树洞 | 文字/语音倾诉、一句话签语、多轮陪伴对话、深刻记忆影像与草堆历史 |
-| 旅行/照片墙 | 旅行记录、感悟总结、相册管理和 R2 媒体同步 |
-| 工具箱/管家 | AI 工具管理、网页解析、任务执行、状态追踪和 Skill 展示 |
-
-## 技术架构
+## 架构一眼看懂
 
 ```mermaid
 flowchart TB
-    UI[原生 HTML / CSS / JavaScript · PWA] --> W[Cloudflare Worker]
-    W --> KV[(Cloudflare KV\n结构化状态)]
-    W --> R2[(Cloudflare R2\n媒体与配额降级)]
-    W --> M{模型网关}
-    M --> WA[Workers AI Llama：普通任务]
-    M --> WQ[Workers AI Qwen：复杂任务与兜底]
-    M --> AQ[阿里云 Qwen Flash：外部低价兜底]
-    M --> GM[Gemini Flash-Lite：免费额度兜底]
-    M -. 默认禁用 .-> EXT[DeepSeek / OpenAI / GLM 外部文本适配器]
-    W --> IMG[Seedream / GPT Image / Gemini]
-    W --> VID[Seedance]
+    UI[手机 / 电脑 · 原生 HTML CSS JS] --> W[Cloudflare Worker · API 与任务调度]
+    CRON[定时触发 · Cron] --> W
+    W --> RULES[内置 Skill · 任务规则与验收]
+    W --> MODEL[模型网关 · 免费额度与低价供应商路由]
+    W --> KV[(KV · 结构化状态)]
+    W --> R2[(R2 · 媒体与存储兜底)]
+    W --> API[资讯信源 / 图片生成等 HTTP 接口]
 ```
 
-前端保持无框架、无构建依赖；云端由 Worker 提供同源 API、口令会话、状态同步和模型路由。本地模式可由 Python 服务运行，`file://` 模式仍可浏览静态内容。
+这是一个 **AI 应用系统，包含受限 Agent 能力**。公告抓取、批改、存储和定时更新有明确执行链，不统一称为 MCP。模型选择与额度取决于部署配置，免费额度耗尽后的外部供应商可能收费。具体接口与规则见 [AI 与接口调用链](docs/06-AI与接口调用链.md)。
 
-## 快速运行
+## 运行与复用
 
-### 只看界面
+**只看界面：** 打开 [在线演示](https://labixy1.github.io/chestnut-courtyard-public/)，或双击仓库的 `index.html`。静态浏览不需要 API Key。
 
-直接双击 `index.html`。静态内容可以浏览，AI、上传和跨设备同步需要本地服务或 Cloudflare Worker。
-
-### 本地完整模式
+**运行本地服务：**
 
 ```bash
 cp .env.example .env
-# 在 .env 中至少配置一个文本模型密钥
+# 在 .env 中配置自己的模型供应商，勿提交密钥
 python3 scripts/cozy_server.py --port 8766
 ```
 
-打开 `http://127.0.0.1:8766/`。项目不要求安装 npm、前端框架、数据库或 Docker。
+打开 `http://127.0.0.1:8766/`。无需 npm、前端框架、数据库或 Docker。
 
-### Cloudflare 部署
+<details>
+<summary><strong>Cloudflare 部署与发布检查</strong></summary>
 
 ```bash
 python3 scripts/build_cloud.py --mode owner
 python3 scripts/cloud_owner_test.py
 node scripts/cloud_worker_test.mjs
-
 cd cloudflare
 wrangler deploy --config wrangler.toml
 ```
 
-口令、会话密钥与模型密钥必须通过 Cloudflare Secret 管理，不能提交到仓库。完整步骤见 [测试与运维手册](docs/07-测试与运维手册.md)。
-
-## 数据与隐私
-
-- GitHub 只保存程序、公开素材、内置 Skill 和 `core/defaults/instance_seed.json`。
-- 真实巡报、树洞、记忆、照片、旅行、任务、日志和实例私有 Skill 均被排除。
-- 主人版和演示版使用隔离的数据空间；公开构建只读取演示种子。
-- 新克隆的仓库首次启动时会从公开种子创建空白私人实例，不连接原作者数据。
-- 彻底忘记会保留 tombstone，防止旧设备同步时把已删除记忆重新写回。
-
-发布前建议运行：
+口令、会话密钥和模型密钥通过 Cloudflare Secret 管理。配置自己的 KV / R2，不连接原作者实例。具体步骤见 [部署说明](cloudflare/README.md)。
 
 ```bash
 python3 scripts/privacy_scan.py
+python3 scripts/documentation_images_test.py
 python3 scripts/repository_readiness_test.py
-python3 scripts/cloud_privacy_test.py
-python3 scripts/cloud_owner_test.py
-node scripts/cloud_worker_test.mjs
+node scripts/html_syntax_test.js
 ```
 
-## 进一步阅读
+公开静态预览由 GitHub Actions 构建发布，见 [预览与视频指南](docs/preview.md)。
 
-- [文档总览](docs/README.md)
-- [AI 与接口调用链](docs/06-AI与接口调用链.md)
-- [测试与运维手册](docs/07-测试与运维手册.md)
-- [Cloudflare 部署说明](cloudflare/README.md)
+</details>
 
-## 项目状态
+## 文档导航
 
-阿栗仍在持续迭代。当前重点是提高资讯筛选与教学质量、让记忆更可核验，并继续完善移动端异步任务与跨设备同步体验。
+| 想了解 | 从这里开始 |
+| --- | --- |
+| 产品目标与体验 | [PRD](docs/01-PRD.md) · [使用指南](docs/02-使用指南.md) |
+| 模块实现与数据关系 | [系统架构](docs/03-系统架构.md) · [功能规格](docs/04-模块与功能规格.md) |
+| AI、Skill 与接口分工 | [调用链](docs/06-AI与接口调用链.md) |
+| 数据与安全 | [同步与安全](docs/05-数据同步与安全.md) |
+| 接手、测试与部署 | [Codex 协作指南](docs/08-Codex协作与迁移指南.md) · [测试与运维](docs/07-测试与运维手册.md) |
+
+---
+
+<div align="center">
+  <strong>阿栗还在生长。</strong><br>
+  一个从真实使用问题出发，持续迭代的个人 AI 产品。
+</div>

@@ -35,7 +35,7 @@ python3 scripts/repository_readiness_test.py
 - 私人云结构化数据以 Cloudflare KV 为权威源，本地是离线缓存。
 - 删除使用 tombstone，旧设备不能复活；明确重新创建才允许 `revive`。
 - 私人版与演示版使用不同 KV，演示版不能接触主人数据。
-- 当前没有 R2，不能声称上传图片已永久跨设备同步。
+- 私人部署可使用 R2 保存媒体；公开静态预览只展示随仓库发布的素材，不支持上传或跨设备同步。
 - AI、工具或系统修改失败时必须明确说失败，不能把“已请求”说成“已完成”。
 - GitHub 不保存口令、API Key、私人记忆、旅行、树洞、上传媒体或云端快照。
 - 未收到主人明确指令，不提交、不推送、不部署。
@@ -70,8 +70,8 @@ python3 scripts/repository_readiness_test.py
 ## 当前部署边界
 
 - 私人版：`https://your-owner-domain.example`
-- 演示版：`https://demo.neuralnode.top`
-- 主分支：`dev`
+- 公开演示版：`https://labixy1.github.io/chestnut-courtyard-public/`
+- 公开仓库主分支：`main`
 - 本地启动：`python3 scripts/cozy_server.py --port 8766`
 
 Cloudflare Secret、KV 数据和域名权限不在 Git 中。换电脑或账号后，需要主人重新提供对应平台权限；不要要求主人把密钥粘贴进聊天或代码。

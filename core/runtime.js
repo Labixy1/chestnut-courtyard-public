@@ -39,10 +39,12 @@
     if(mode!=='interview'||configured.demoStaticSeed!==true)return false;
     const values=window.COZY?.local_state?.values;
     if(!values||typeof values!=='object')return false;
+    const version=String(window.COZY?.local_state?.version||1);
+    const upgrade=localStorage.getItem('cozy_demo_seed_version')!==version;
     Object.entries(values).forEach(([key,value])=>{
-      if(force||localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(clone(value)));
+      if(force||upgrade||localStorage.getItem(key)===null)localStorage.setItem(key,JSON.stringify(clone(value)));
     });
-    localStorage.setItem('cozy_demo_seed_version',String(window.COZY?.local_state?.version||1));
+    localStorage.setItem('cozy_demo_seed_version',version);
     return true;
   }
   seedDemoBrowserState(false);
@@ -59,4 +61,21 @@
   });
   document.documentElement.dataset.cozyMode=mode;
   window.dispatchEvent(new CustomEvent('cozy:runtime-ready',{detail:window.CozyRuntime}));
+  if(staticHosting&&typeof document.addEventListener==='function'){
+    // Static Pages has no API: keep navigation usable without pretending writes work.
+    const actions=new Set(['saveTrip','saveTripEdits','removeTrip','removeTripPhoto','pickTripPhotos','pickNewTripPhotos','saveReflection','deleteReflection','summarizeReflection','startReflectionVoice','saveNoticeNote','deleteNoticeNote','toggleNoticeReadLater','openChestPicker','extractToolFromNotice','parseNoticeRequestLink','refreshBlackboardQuestion','submitBbAnswer','askBlackboardHelper','saveBlackboardDirection','reopenBbAnswer','startVoice','addEntry','saveHeartEntryEdit','deleteHeartEntry','saveBuriedText','deleteBuriedItem','chooseBuriedPhoto','generateBuriedImage','plantSeed','toggleOrchardVoice','startNewOrchardChat','waterAllPlots','harvestAllPlots','waterSinglePlot','harvestPlot','waterPlot','startDistillation','distillMemory','forgetMemory','undoSnapshot','createPhotoAlbum','renamePhotoAlbum','deletePhotoAlbum','removeAlbumPhoto','refreshToolPrice']);
+    function locks(button){return String(button.getAttribute('onclick')||'').match(/\b[A-Za-z]+(?=\()/g)?.some(name=>actions.has(name))||['notice-refresh','orchard-plant','seed-mic','distill-button'].includes(button.id);}
+    function lockControls(){
+      document.querySelectorAll('button,input,textarea').forEach(node=>{
+        if(node.tagName==='BUTTON'&&locks(node)){node.disabled=true;node.title='静态演示不提交修改；实时功能需要部署 Worker';}
+        if(node.tagName==='TEXTAREA'||node.tagName==='INPUT'){
+          if(['file','date','password'].includes(node.type))node.disabled=true;
+          else node.readOnly=true;
+        }
+      });
+      document.querySelectorAll('.notice-note-state').forEach(node=>{if(node.textContent.includes('私人云端'))node.textContent='示例阅读笔记';});
+    }
+    function initLocks(){lockControls();new MutationObserver(lockControls).observe(document.body,{childList:true,subtree:true});}
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initLocks);else initLocks();
+  }
 })();

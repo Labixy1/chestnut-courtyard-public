@@ -41,6 +41,7 @@
   .icon-control .count{position:absolute;right:-8px;top:-5px;min-width:30px;height:18px;padding:0 5px;border-radius:9px;display:grid;place-items:center;background:#d9ae55;color:#4b3518;border:2px solid rgba(255,250,232,.9);font-size:8px;font-weight:800;letter-spacing:0}
   .garden{position:absolute;inset:0;z-index:2;perspective:900px;pointer-events:none}
   .plot{position:absolute;border:0;background:transparent;cursor:pointer;color:#fff8e9;outline:none;filter:drop-shadow(0 10px 11px rgba(24,20,12,.3));pointer-events:auto;transform:translate(-50%,-50%)}
+  .plot:not(.empty){z-index:3}
   .plot:nth-child(1){left:37.5%;top:42.5%;width:21%;height:18%}.plot:nth-child(1) .soil{left:8%;right:3%;height:58px;border-radius:46% 54% 42% 58%;background:rgba(92,67,38,.13)}
   .plot:nth-child(2){left:53%;top:46.5%;width:23%;height:19%}.plot:nth-child(2) .soil{left:2%;right:9%;height:68px;border-radius:58% 42% 54% 46%;background:rgba(112,77,40,.11)}
   .plot:nth-child(3){left:72.5%;top:54%;width:22%;height:20%}.plot:nth-child(3) .soil{left:10%;right:0;height:54px;border-radius:42% 58% 48% 52%;background:rgba(79,60,34,.15)}
@@ -341,7 +342,7 @@
   }
   function renderKnowledgeBadge(){}
   function topicUpdatedDate(topic){return String(topic.updatedAt||topic.harvestedAt||topic.createdAt||'').slice(0,10)||'时间未记录';}
-  function topicPointCount(topic){return Math.max((topic.chapterSections||topic.chapter_sections||[]).length,(topic.knowledgePoints||topic.knowledge_points||[]).length,(topic.answerGuides||topic.answer_guides||[]).length,(topic.entries||[]).length);}
+  function topicPointCount(topic){return Math.max((topic.chapterSections||topic.chapter_sections||topic.sections||[]).length,(topic.knowledgePoints||topic.knowledge_points||[]).length,(topic.answerGuides||topic.answer_guides||[]).length,(topic.entries||[]).length);}
   function setKnowledgeHeader(title,detail=false){document.getElementById('knowledge-panel-title').textContent=title;document.getElementById('knowledge-back').classList.toggle('show',detail);}
   function selectKnowledgeCategory(categoryId){activeKnowledgeCategory=categoryId;activeKnowledgeTopicId='';activeHarvestId='';knowledgeReturnTarget='index';renderKnowledgeTopics();}
   function openKnowledgeTopic(id,returnTarget='index'){activeKnowledgeTopicId=String(id);activeHarvestId='';knowledgeReturnTarget=returnTarget;renderKnowledgeTopics();document.getElementById('knowledge-scroll').scrollTop=0;}
@@ -353,7 +354,7 @@
     document.getElementById('knowledge-topics').innerHTML='<div class="knowledge-index"><nav class="knowledge-categories" aria-label="知识分类">'+KNOWLEDGE_CATEGORIES.map(category=>'<button class="knowledge-category-button '+(category.id===selected.id?'active':'')+'" type="button" onclick="selectKnowledgeCategory(\''+category.id+'\')"><span>'+escapeOrchard(category.label)+'</span><span>'+counts[category.id]+'</span></button>').join('')+'</nav><section class="knowledge-directory"><header class="knowledge-directory-head"><h3>'+escapeOrchard(selected.label)+'</h3><p>'+escapeOrchard(selected.description)+'</p></header>'+(visible.length?visible.map(topic=>'<button class="knowledge-topic-row" type="button" onclick="openKnowledgeTopic(\''+escapeOrchard(topic.id)+'\')"><span><strong>'+escapeOrchard(topic.title||'未命名专题')+'</strong><small>'+escapeOrchard(topicUpdatedDate(topic))+' · '+topicPointCount(topic)+' 个学习要点</small></span><span class="knowledge-topic-arrow" aria-hidden="true">›</span></button>').join(''):'<div class="empty-note">这个分类还没有形成专题笔记。</div>')+'</section></div>';
   }
   function normalizedChapterSections(topic){
-    const direct=Array.isArray(topic.chapterSections)?topic.chapterSections:Array.isArray(topic.chapter_sections)?topic.chapter_sections:[];
+    const direct=Array.isArray(topic.chapterSections)?topic.chapterSections:Array.isArray(topic.chapter_sections)?topic.chapter_sections:Array.isArray(topic.sections)?topic.sections:[];
     if(direct.length)return direct.map((section,index)=>typeof section==='string'?{title:'第 '+(index+1)+' 节',content:section}:section).filter(Boolean);
     const guides=Array.isArray(topic.answerGuides)?topic.answerGuides:Array.isArray(topic.answer_guides)?topic.answer_guides:[];
     if(guides.length)return guides.map(guide=>({title:guide.title||'一个答题方法',content:[guide.appliesTo||guide.applies_to,guide.commonMistake||guide.common_mistake,guide.whyItHurts||guide.why_it_hurts,guide.improvement].filter(Boolean).join('。'),steps:guide.answerSteps||guide.answer_steps||[],caution:guide.commonMistake||guide.common_mistake,example:guide.memoryHook||guide.memory_hook}));
