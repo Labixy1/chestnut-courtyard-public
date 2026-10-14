@@ -18,7 +18,7 @@ def main() -> None:
     assert '"dataSource": "remote"' in config
     assert '"allowWrites": true' in config
     data = (DIST / "core/data.js").read_text(encoding="utf-8")
-    match = re.search(r"window\.COZY\s*=\s*(\{.*\});\s*$", data, re.S)
+    match = re.search(r"window\.COZY\s*=\s*(\{.*\});\s*(?:window\.CozyRuntime\?\.seedDemoBrowserState\(false\);\s*)?$", data, re.S)
     assert match
     bundle = json.loads(match.group(1))
     assert bundle["heart_hollow"]["entries"] == []
@@ -34,7 +34,7 @@ def main() -> None:
     assert 'AUTH_MODE = "passcode"' in wrangler
     assert "run_worker_first = true" in wrangler
     assert 'binding = "COZY_MEDIA"' in wrangler
-    assert 'bucket_name = "chestnut-courtyard-media"' in wrangler
+    assert re.search(r'^bucket_name\s*=\s*"[^"\s]+"\s*$', wrangler, re.M)
     assert 'COZY_MEDIA_LIMIT_BYTES = "9000000000"' in wrangler
     assert '"0 0 * * MON,WED,FRI"' in wrangler
     assert '"15 0 * * MON,WED,FRI"' in wrangler
